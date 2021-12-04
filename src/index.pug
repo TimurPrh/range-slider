@@ -1,0 +1,29 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Plugin
+    body 
+        - let min = 1000, max = 16000
+        - let a = 5000, b = 10000;
+        .range-slider
+            label.range-slider__result(for='a')
+            .range-slider__wrapper
+                .range-slider__range-bg
+                .range-slider__thumb
+                input#a.range-slider__input(type='range' min=min value=a max=max step=100)
+                input#a.range-slider__input(type='range' step=100)
+
+        input(type='range' min=min value=a max=max step=100)
+
+
+
+            //- .range-slider__result 1000₽ - 5000₽
+            //- .range-slider__bg
+            //- .range-slider__range-bg
+            //- label(for='a' style='--c: var(--a)')
+            //- input#a(type='range' min=min value=a max=max step=100)
+            //- label(for='b' style='--c: var(--b)')
+            //- input#b(type='range' min=min value=b max=max step=100)
