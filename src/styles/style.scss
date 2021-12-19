@@ -9,23 +9,32 @@
     --secondary-gradient-color: linear-gradient(180deg, #6FCF97 0%, #66D2EA 100%);
 }
 
-.range-slider {
+#root {
     padding: 50px;
-    margin: 0 auto;
+    width: 380px;
+    height: 380px;
+}
+
+.range-slider {
+    height: 100%;
     &__wrapper {
         position: relative;
-        margin-top: 15px;
-        width: 280px;
+        width: 100%;
         height: 6px;
+        // width: 6px;
+        //     height: 100%;
         background: inherit;
         border: 1px solid rgba(31, 32, 65, 0.25);   
         border-radius: 3px;
+        &_vertical {
+            width: 6px;
+            height: 100%;
+        }
     }
     &__thumb {
-        // display: none;
         position: absolute;
         top: 50%;
-        left: 0;
+        left: 50%;
         transform: translate(-50%, -50%);
         border: none;
         width: 14px; 
@@ -35,11 +44,10 @@
         border: 2px solid #FFFFFF;
     }
     &__range-bg {
-        // display: none;
         position: absolute;
         top: -1px;
         left: -1px;
-        width: 0; 
+        width: 6px; 
         height: 6px;
         margin-left: 0;
         background: var(--secondary-gradient-color);  
@@ -52,96 +60,3 @@
         display: none;
     }
 }
-
-
-
-// $w: 266px;
-// $h: 6px;
-// $d: .5*$h;
-// $r: .5*$d;
-// $uw: $w - $d;
-
-// @mixin track() {
-// 	width: 100%; 
-//     height: 6px;
-// 	background: inherit;
-// }
-
-// @mixin thumb() {
-// 	border: none; /* get rid of Firefox thumb border */
-//     margin-top: -4px;
-//     margin-left: -5px;
-// 	width: 14px; 
-//     height: 14px;
-// 	border-radius: 50%;
-//     background: var(--secondary-gradient-color);
-//     border: 2px solid #FFFFFF;
-// 	pointer-events: auto;
-// }
-
-// .range-slider {
-//     --dif: calc(var(--max) - var(--min));
-//     display: grid;
-//     row-gap: 24px;
-//     grid-template: repeat(1, max-content) #{$h} / auto auto;
-//     position: relative;
-//     width: 260px;
-//     &__bg {
-//         grid-column: 1 / span 2;
-//         grid-row: 2;
-//         width: 100%; 
-//         height: 6px;
-//         background: inherit;
-//         border: 1px solid rgba(31, 32, 65, 0.25);   
-//         border-radius: 3px;
-//     }
-//     &__range-bg {
-//         grid-column: 1 / span 2;
-//         grid-row: 2;
-//         width: 50%; 
-//         height: 6px;
-//         margin-left: 10px;
-//         margin-right: 10px;
-
-//         background: var(--secondary-gradient-color);  
-//         border-radius: 3px;
-//     }
-//     &__result {
-//         grid-column: 2 / 3;
-//         grid-row: 1;
-//         justify-self: end;
-//     }
-        
-//     input[type='range'] {
-//         &::-webkit-slider-runnable-track, 
-//         &::-webkit-slider-thumb, & {
-//             -webkit-appearance: none
-//         }
-//         grid-column: 1 / span 2;
-//         grid-row: 2;
-//         background: none; /* get rid of white Chrome background */
-//         pointer-events: none;
-        
-//         &::-webkit-slider-runnable-track { @include track }
-//         &::-moz-range-track { @include track }
-        
-//         &::-webkit-slider-thumb { @include thumb }
-//         &::-moz-range-thumb { @include thumb }
-//         &:last-child {
-//             &::-webkit-slider-thumb {
-//                 margin-left: 5px;
-//             }
-//             &::-moz-range-thumb {
-//                 margin-left: 5px;
-//             }
-//         }
-//     }
-        
-//     label {
-//         display: none;
-//         &::after {
-//             counter-reset: c var(--c);
-//             content: '--' attr(for) ': ' counter(c) ';';
-//         }
-//     }
-// }

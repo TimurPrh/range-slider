@@ -1,24 +1,46 @@
 import './styles/style.scss';
 
-const rangeSlider1 = document.querySelector('.range-slider');
+const rangeSliderWrapper = document.querySelector('#root');
 
 const SliderView = function SliderView(elem) {
-    this.rangeSlider = elem;
+    this.render(elem);
+
+    this.rangeSlider = elem.querySelector('.range-slider');
     this.labels = this.rangeSlider.querySelectorAll('label');
+    this.slider = this.rangeSlider.querySelector('.range-slider__wrapper');
     this.thumbs = this.rangeSlider.querySelectorAll('.range-slider__thumb');
     this.track = this.rangeSlider.querySelector('.range-slider__range-bg');
-    this.slider = this.rangeSlider.querySelector('.range-slider__wrapper');
     this.sliderInputs = this.rangeSlider.querySelectorAll('input');
-    this.offsetWidth = this.slider.offsetWidth;
-    this.sliderCoords = this.slider.getBoundingClientRect();
     this.onMoveThumb = null;
+    this.isVertical;
 }
-SliderView.prototype.render = function render(viewModel) {
+SliderView.prototype.render = function render(elem) {
+    const sliderElement = document.createElement('div');
+    sliderElement.classList.add('range-slider');
+    sliderElement.innerHTML = `<label class="range-slider__result" for='a' data-id="0"></label>
+                                <label class="range-slider__result" for='b' data-id="1"></label>
+                                <div class="range-slider__wrapper">
+                                    <div class="range-slider__range-bg"></div>
+                                    <div class="range-slider__thumb" data-id="0"></div>
+                                    <div class="range-slider__thumb" data-id="1"></div>
+                                    <input id="a" class="range-slider__input" type="range">
+                                    <input id="b" class="range-slider__input" type="range">
+                                </div>`
+    elem.append(sliderElement);
+}
+SliderView.prototype.initParams = function initParams(viewModel, isVertical) {
+    this.isVertical = isVertical;
+    if (isVertical) {
+        this.slider.classList.add('range-slider__wrapper_vertical');
+    }
+    this.offsetWidth = this.slider.offsetWidth;
+    this.offsetHeight = this.slider.offsetHeight;
+    // this.sliderCoords = this.slider.getBoundingClientRect();
     viewModel.forEach((model, id) => {
         this.sliderInputs[id].min = model.sliderMin;
         this.sliderInputs[id].max = model.sliderMax;
+        this.sliderInputs[id].step = model.sliderStep;
     });
-    
 }
 SliderView.prototype.initEventListener = function initEventListener() {
     this.thumbs.forEach(thumb => thumb.addEventListener('mousedown', this.onMoveThumb));
@@ -34,11 +56,11 @@ SliderView.prototype.moveAt = function moveAt(obj, id) {
     this.renderTrack(trackOx.begin, trackOx.end);
     this.updateInputValue(thumbValue, id);
 
-    this.thumbs[id].style.left = `${thumbOx}px`;
+    this.isVertical ? this.thumbs[id].style.top = `${thumbOx}px` : this.thumbs[id].style.left = `${thumbOx}px`;
 }
 SliderView.prototype.renderTrack = function renderTrack(begin, end) {
-    this.track.style.marginLeft = `${begin}px`;
-    this.track.style.width = `${end - begin}px`;
+    this.isVertical ? this.track.style.marginTop = `${begin}px` : this.track.style.marginLeft = `${begin}px`;
+    this.isVertical ? this.track.style.height = `${end - begin}px` : this.track.style.width = `${end - begin}px`;
 }
 SliderView.prototype.updateInputValue = function updateInputValue(val, id) {
     this.sliderInputs[id].value = val;
@@ -53,17 +75,20 @@ SliderView.prototype.updateLabel = function updateLabel(str, id) {
 const SliderModel = function SliderModel() {
     this.numberOfThumbs = 2;
     this.minThumbOffset = 5;
+    this.isVertical = true;
     this.sliderProps = [
         {
-            sliderMin: 1000,
-            sliderMax: 10000,
+            sliderMin: 0,
+            sliderMax: 100,
+            sliderStep: 1,
             offsetLeft: this.minThumbOffset,
             offsetRight: this.minThumbOffset,
             initialState: 0
         },
         {
-            sliderMin: 1000,
-            sliderMax: 10000,
+            sliderMin: 0,
+            sliderMax: 100,
+            sliderStep: 1,
             offsetLeft: this.minThumbOffset,
             offsetRight: this.minThumbOffset,
             initialState: 0
@@ -87,26 +112,48 @@ SliderModel.prototype.initView = function initView(fn) {
     fn(this.sliderProps);
 }
 SliderModel.prototype.calculateMove = function calculateMove(ox, id) {
-    this.sliderProps[0].sliderMax = this.outputOx.thumbs[1].value - 100;
-    this.sliderProps[0].offsetRight = this.offsetWidth - this.outputOx.thumbs[1].ox + this.minThumbOffset * 3;
+    console.log('------------------');
+    console.log(ox);
+    if (this.isVertical) {
+        this.sliderProps[0].sliderMin = this.outputOx.thumbs[1].value + this.sliderProps[1].sliderStep;
+        this.sliderProps[0].offsetRight = this.offsetWidth - this.outputOx.thumbs[1].ox + this.minThumbOffset * 3;
 
-    this.sliderProps[1].sliderMin = this.outputOx.thumbs[0].value + 100;
-    this.sliderProps[1].offsetLeft = this.outputOx.thumbs[0].ox + this.minThumbOffset * 3;
+        this.sliderProps[1].sliderMax = this.outputOx.thumbs[0].value - this.sliderProps[0].sliderStep;
+        this.sliderProps[1].offsetLeft = this.outputOx.thumbs[0].ox + this.minThumbOffset * 3;
 
-    this.sliderRange[id] = this.sliderProps[id].sliderMax - this.sliderProps[id].sliderMin;
-    this.currentValue[id] = this.sliderProps[id].sliderMax + this.sliderRange[id] / (this.offsetWidth - this.sliderProps[id].offsetRight - this.sliderProps[id].offsetLeft) * (ox - this.offsetWidth + this.sliderProps[id].offsetRight);
-    if (ox < this.sliderProps[id].offsetLeft) {
-        ox = this.sliderProps[id].offsetLeft;
-        this.currentValue[id] = this.sliderProps[id].sliderMin;
-    } else if (ox > this.offsetWidth - this.sliderProps[id].offsetRight) {
-        ox = this.offsetWidth - this.sliderProps[id].offsetRight;
-        this.currentValue[id] = this.sliderProps[id].sliderMax;
+        this.sliderRange[id] = this.sliderProps[id].sliderMax - this.sliderProps[id].sliderMin;
+        this.currentValue[id] = this.sliderProps[id].sliderMax - this.sliderRange[id] / (this.offsetWidth - this.sliderProps[id].offsetRight - this.sliderProps[id].offsetLeft) * (ox - this.sliderProps[id].offsetLeft);
+
+        if (ox < this.sliderProps[id].offsetLeft) {
+            ox = this.sliderProps[id].offsetLeft;
+            this.currentValue[id] = this.sliderProps[id].sliderMax;
+        } else if (ox > this.offsetWidth - this.sliderProps[id].offsetRight) {
+            ox = this.offsetWidth - this.sliderProps[id].offsetRight;
+            this.currentValue[id] = this.sliderProps[id].sliderMin;
+        }
+    } else {
+        this.sliderProps[0].sliderMax = this.outputOx.thumbs[1].value - this.sliderProps[1].sliderStep;
+        this.sliderProps[0].offsetRight = this.offsetWidth - this.outputOx.thumbs[1].ox + this.minThumbOffset * 3;
+
+        this.sliderProps[1].sliderMin = this.outputOx.thumbs[0].value + this.sliderProps[0].sliderStep;
+        this.sliderProps[1].offsetLeft = this.outputOx.thumbs[0].ox + this.minThumbOffset * 3;
+
+        this.sliderRange[id] = this.sliderProps[id].sliderMax - this.sliderProps[id].sliderMin;
+        this.currentValue[id] = this.sliderProps[id].sliderMax + this.sliderRange[id] / (this.offsetWidth - this.sliderProps[id].offsetRight - this.sliderProps[id].offsetLeft) * (ox - this.offsetWidth + this.sliderProps[id].offsetRight);
+
+        if (ox < this.sliderProps[id].offsetLeft) {
+            ox = this.sliderProps[id].offsetLeft;
+            this.currentValue[id] = this.sliderProps[id].sliderMin;
+        } else if (ox > this.offsetWidth - this.sliderProps[id].offsetRight) {
+            ox = this.offsetWidth - this.sliderProps[id].offsetRight;
+            this.currentValue[id] = this.sliderProps[id].sliderMax;
+        }
     }
-
-    if (this.currentValue[id]) {
+    
+    // if (this.currentValue[id]) {
         this.outputOx.thumbs[id].ox = ox;
         this.outputOx.thumbs[id].value = this.currentValue[id];
-    }
+    // }
 
     if (this.numberOfThumbs === 1) {
         this.outputOx.track = {
@@ -129,22 +176,36 @@ const SliderController = function SliderController(sliderView, sliderModel) {
 };
 SliderController.prototype.initialize = function initialize() {
     this.sliderView.onMoveThumb = this.onMoveThumb.bind(this);
-    this.sliderModel.offsetWidth = this.sliderView.offsetWidth;
+    
     this.sliderModel.initView(this.initView.bind(this));
+    this.sliderView.initEventListener();
+
+    if (this.sliderModel.isVertical) {
+        this.sliderModel.offsetWidth = this.sliderView.offsetHeight;
+    } else {
+        this.sliderModel.offsetWidth = this.sliderView.offsetWidth;
+    }
+
+    this.setInitialState();
 };
 SliderController.prototype.initView = function initView(props) {
-    this.sliderView.render([
+    this.sliderView.initParams([
         {
             sliderMin: props[0].sliderMin,
             sliderMax: props[0].sliderMax,
+            sliderStep: props[0].sliderStep,
         },
         {
             sliderMin: props[1].sliderMin,
             sliderMax: props[1].sliderMax,
+            sliderStep: props[1].sliderStep,
         }
-    ]);
+    ], this.sliderModel.isVertical);
+}
+SliderController.prototype.setInitialState = function setInitialState() {
     this.sliderModel.calculateMove(0, 0);
-    this.sliderModel.calculateMove(280, 1);
+    this.sliderModel.calculateMove(this.sliderModel.offsetWidth - this.sliderModel.minThumbOffset, 1);
+    
     this.sliderView.moveAt(this.sliderModel.outputOx, 0);
     this.sliderView.moveAt(this.sliderModel.outputOx, 1);
 }
@@ -155,7 +216,14 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event) {
         if (event.target.classList.contains('range-slider__thumb')) {
             this.currentThumb = event.target;
         }
-        this.sliderModel.calculateMove(event.pageX - this.sliderView.sliderCoords.left, this.currentThumb.dataset.id);
+
+        console.log('target');
+        console.dir(this.sliderView.slider);
+        console.log(this.sliderView.slider.offsetHeight - this.sliderView.slider.offsetTop - event.pageY);
+
+        this.sliderModel.isVertical ? this.sliderModel.calculateMove(event.pageY - this.sliderView.slider.offsetTop, this.currentThumb.dataset.id) : 
+        this.sliderModel.calculateMove(event.pageX - this.sliderView.slider.offsetLeft, this.currentThumb.dataset.id);
+
         this.sliderView.moveAt(this.sliderModel.outputOx, this.currentThumb.dataset.id);
     }
     
@@ -170,11 +238,11 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event) {
 };
 
 
-const sliderView = new SliderView(rangeSlider1);
+const sliderView = new SliderView(rangeSliderWrapper);
 const sliderModel = new SliderModel();
 const sliderController = new SliderController(sliderView, sliderModel);
 sliderController.initialize();
-sliderView.initEventListener();
+
 
 
 
