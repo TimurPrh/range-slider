@@ -17,7 +17,9 @@
 }
 
 .range-slider {
+    // position: relative;
     height: 100%;
+    padding-top: 30px;
     &__outer {
         width: 100%;
         height: 100%;
@@ -45,8 +47,8 @@
         width: 14px; 
         height: 14px;
         border-radius: 50%;
-        // width: 24px; 
-        // height: 12px;
+        // width: 30px; 
+        // height: 2px;
         background: var(--secondary-gradient-color);
         border: 2px solid #FFFFFF;
     }
@@ -80,6 +82,10 @@
         }
     }
     &__result {
+        position: absolute;
+        top: -25px;
+        left: 0;
+        transform: translate(-50%, -50%);
         display: block;
         &:nth-child(2) {
             margin-bottom: 15px;

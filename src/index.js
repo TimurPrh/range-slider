@@ -17,10 +17,10 @@ const SliderView = function SliderView(elem) {
 SliderView.prototype.render = function render(elem) {
     const sliderElement = document.createElement('div');
     sliderElement.classList.add('range-slider');
-    sliderElement.innerHTML = `<label class="range-slider__result" for='a' data-id="0"></label>
-                                <label class="range-slider__result" for='b' data-id="1"></label>
-                                <div class="range-slider__outer">
+    sliderElement.innerHTML = `<div class="range-slider__outer">
                                     <div class="range-slider__wrapper">
+                                        <label class="range-slider__result" for='a' data-id="0"></label>
+                                        <label class="range-slider__result" for='b' data-id="1"></label>
                                         <div class="range-slider__range-bg"></div>
                                         <div class="range-slider__thumb" data-id="0"></div>
                                         <div class="range-slider__thumb" data-id="1"></div>
@@ -30,10 +30,11 @@ SliderView.prototype.render = function render(elem) {
                                 </div>`
     elem.append(sliderElement);
 }
-SliderView.prototype.initParams = function initParams(viewModel, isVertical, isRange, scale) {
+SliderView.prototype.initParams = function initParams(viewModel, isVertical, isRange, scale, tip) {
     this.isVertical = isVertical;
     this.isRange = isRange;
     this.scale = scale;
+    this.tip = tip;
 
     if (isVertical) {
         this.slider.classList.add('range-slider__wrapper_vertical');
@@ -69,7 +70,6 @@ SliderView.prototype.initParams = function initParams(viewModel, isVertical, isR
             scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${stepWidth}px)`;
             this.slider.parentNode.append(scaleElement);
         }
-
     }
     
     if (!isRange) {
@@ -97,7 +97,24 @@ SliderView.prototype.moveAt = function moveAt(obj, id) {
     this.renderTrack(trackOx.begin, trackOx.end);
     this.updateInputValue(thumbValue, id);
 
-    this.isVertical ? this.thumbs[id].style.top = `${thumbOx}px` : this.thumbs[id].style.left = `${thumbOx}px`;
+    if (this.isVertical) {
+        this.thumbs[id].style.top = `${thumbOx}px`;
+        if (this.tip) {
+            this.labels[id].style.display = 'block';
+            this.labels[id].style.top = `${thumbOx}px`;
+            this.labels[id].style.marginLeft = `-${this.labels[id].offsetWidth + 10}px`;
+        } else {
+            this.labels[id].style.display = 'none';
+        }
+    } else {
+        this.thumbs[id].style.left = `${thumbOx}px`;
+        if (this.tip) {
+            this.labels[id].style.display = 'block';
+            this.labels[id].style.left = `${thumbOx}px`;
+        } else {
+            this.labels[id].style.display = 'none';
+        }
+    }
 }
 SliderView.prototype.renderTrack = function renderTrack(begin, end) {
     this.isVertical ? this.track.style.marginTop = `${begin}px` : this.track.style.marginLeft = `${begin}px`;
@@ -116,21 +133,22 @@ SliderView.prototype.updateLabel = function updateLabel(str, id) {
 const SliderModel = function SliderModel() {
     this.minThumbOffset = 0;
     this.isRange = true;
-    this.isVertical = true;
-    this.viewScale = true;
+    this.isVertical = false;
+    this.viewScale = false;
+    this.viewTip = true;
     this.sliderProps = [
         {
-            sliderMin: -100,
-            sliderMax: 100,
-            sliderStep: 25,
+            sliderMin: 10,
+            sliderMax: 200,
+            sliderStep: 1,
             offsetLeft: this.minThumbOffset,
             offsetRight: this.minThumbOffset,
             initialState: 0
         },
         {
-            sliderMin: -100,
-            sliderMax: 100,
-            sliderStep: 25,
+            sliderMin: 10,
+            sliderMax: 200,
+            sliderStep: 1,
             offsetLeft: this.minThumbOffset,
             offsetRight: this.minThumbOffset,
             initialState: 0
@@ -280,7 +298,7 @@ SliderController.prototype.initView = function initView(props) {
             sliderMax: props[1].sliderMax,
             sliderStep: props[1].sliderStep,
         }
-    ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale);
+    ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip);
 }
 SliderController.prototype.setInitialState = function setInitialState() {
     if (this.sliderModel.isVertical) {
