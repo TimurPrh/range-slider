@@ -12,6 +12,7 @@ const SliderView = function SliderView(elem) {
     this.track = this.rangeSlider.querySelector('.range-slider__range-bg');
     this.sliderInputs = this.rangeSlider.querySelectorAll('input');
     this.onMoveThumb = null;
+    this.onClickBg = null;
     this.isVertical;
 }
 SliderView.prototype.render = function render(elem) {
@@ -30,11 +31,12 @@ SliderView.prototype.render = function render(elem) {
                                 </div>`
     elem.append(sliderElement);
 }
-SliderView.prototype.initParams = function initParams(viewModel, isVertical, isRange, scale, tip) {
+SliderView.prototype.initParams = function initParams(viewModel, isVertical, isRange, scale, tip, bar) {
     this.isVertical = isVertical;
     this.isRange = isRange;
     this.scale = scale;
     this.tip = tip;
+    this.bar = bar;
 
     if (isVertical) {
         this.slider.classList.add('range-slider__wrapper_vertical');
@@ -76,6 +78,12 @@ SliderView.prototype.initParams = function initParams(viewModel, isVertical, isR
         this.thumbs[0].style.display = 'none';
         this.labels[0].style.display = 'none';
     }
+
+    if (!bar) {
+        this.track.style.display = 'none';
+    } else {
+        this.track.style.display = 'block';
+    }
     
     viewModel.forEach((model, id) => {
         this.sliderInputs[id].min = model.sliderMin;
@@ -85,6 +93,8 @@ SliderView.prototype.initParams = function initParams(viewModel, isVertical, isR
 }
 SliderView.prototype.initEventListener = function initEventListener() {
     this.isRange ? this.thumbs.forEach(thumb => thumb.addEventListener('mousedown', this.onMoveThumb)) : this.thumbs[1].addEventListener('mousedown', this.onMoveThumb);
+    
+    this.slider.addEventListener('mousedown', this.onClickBg);
 }
 SliderView.prototype.moveAt = function moveAt(obj, id) {
     const thumbOx = obj.thumbs[id].ox;
@@ -134,24 +144,23 @@ const SliderModel = function SliderModel() {
     this.minThumbOffset = 0;
     this.isRange = true;
     this.isVertical = false;
-    this.viewScale = false;
+    this.viewScale = true;
     this.viewTip = true;
+    this.viewBar = true;
     this.sliderProps = [
         {
-            sliderMin: 10,
-            sliderMax: 200,
-            sliderStep: 1,
+            sliderMin: -10,
+            sliderMax: 10,
+            sliderStep: 2,
             offsetLeft: this.minThumbOffset,
-            offsetRight: this.minThumbOffset,
-            initialState: 0
+            offsetRight: this.minThumbOffset
         },
         {
-            sliderMin: 10,
-            sliderMax: 200,
-            sliderStep: 1,
+            sliderMin: -10,
+            sliderMax: 10,
+            sliderStep: 2,
             offsetLeft: this.minThumbOffset,
-            offsetRight: this.minThumbOffset,
-            initialState: 0
+            offsetRight: this.minThumbOffset
         }
     ]
     this.currentValue = [];
@@ -265,6 +274,18 @@ SliderModel.prototype.calculateMove = function calculateMove(ox, id) {
         }
     }
 };
+SliderModel.prototype.calculateIndex = function calculateIndex(ox) {
+    if (this.isRange) {
+        const currOutput = [];
+        const delta = [];
+        currOutput[0] = this.outputOx.thumbs[0].ox;
+        currOutput[1] = this.outputOx.thumbs[1].ox;
+        delta[0] = Math.abs(currOutput[0] - ox);
+        delta[1] = Math.abs(currOutput[1] - ox);
+        return delta.indexOf(Math.min(...delta))
+    }
+    return 1
+}
 
 
 const SliderController = function SliderController(sliderView, sliderModel) {
@@ -274,6 +295,7 @@ const SliderController = function SliderController(sliderView, sliderModel) {
 };
 SliderController.prototype.initialize = function initialize() {
     this.sliderView.onMoveThumb = this.onMoveThumb.bind(this);
+    this.sliderView.onClickBg = this.onClickBg.bind(this);
     
     this.sliderModel.initView(this.initView.bind(this));
     this.sliderView.initEventListener();
@@ -298,7 +320,7 @@ SliderController.prototype.initView = function initView(props) {
             sliderMax: props[1].sliderMax,
             sliderStep: props[1].sliderStep,
         }
-    ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip);
+    ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip, this.sliderModel.viewBar);
 }
 SliderController.prototype.setInitialState = function setInitialState() {
     if (this.sliderModel.isVertical) {
@@ -345,60 +367,20 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event) {
         document.removeEventListener('mousemove', onMouseMove);
     };
 };
+SliderController.prototype.onClickBg = function onClickBg(event) {
+    event.preventDefault();
+
+    if (event.target.classList.contains('range-slider__range-bg') || event.target.classList.contains('range-slider__wrapper')) {
+        let ox;
+        this.sliderModel.isVertical ? ox = event.pageY - this.sliderView.slider.offsetTop : ox = event.pageX - this.sliderView.slider.offsetLeft;
+        const i = this.sliderModel.calculateIndex(ox);
+        this.sliderModel.calculateMove(ox, i);
+        this.sliderView.moveAt(this.sliderModel.outputOx, i);
+    }
+};
 
 
 const sliderView = new SliderView(rangeSliderWrapper);
 const sliderModel = new SliderModel();
 const sliderController = new SliderController(sliderView, sliderModel);
 sliderController.initialize();
-
-
-
-
-
-// thumb.onmousedown = function(event) {
-//     event.preventDefault();
-    
-//     view.moveAt(event.pageX - sliderCoords.left);
-
-//     function onMouseMove(event) {
-//         view.moveAt(event.pageX - sliderCoords.left);
-//     }
-
-//     document.addEventListener('mousemove', onMouseMove);
-
-//     document.onmouseup = function() {
-//         document.removeEventListener('mousemove', onMouseMove);
-//         thumb.onmouseup = null;
-//     };
-
-// };
-
-
-
-// thumb.ondragstart = function() {
-//     return false;
-// };
-
-
-
-
-
-
-//событие на колёсико
-// slider.onwheel = function(event) {
-//     event.preventDefault();
-//     shiftX = 0;
-//     console.log(event.deltaY)
-    // moveAt(thumb.getBoundingClientRect().left - event.deltaY/50);
-// }
-
-// чтобы ползунок прыгал вдоль слайдера по клику мышки
-// slider.onmousedown = function(event) {
-//     if (event.target !== slider) {
-//         return false;
-//     }
-//     shiftX = thumb.offsetWidth/2;
-
-//     moveAt(event.pageX);
-// }
