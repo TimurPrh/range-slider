@@ -6,4 +6,8 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Plugin
     body 
-        #root
+        include ./panel/panel.pug
+        .main 
+            #root
+            .main-panel 
+                +panel
