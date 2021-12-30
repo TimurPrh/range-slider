@@ -1,17 +1,35 @@
 mixin panel 
     .panel 
-        .panel__switch
-            input.panel__switch-input(id="range" name="range" type="checkbox")
-            label.panel__switch-label(for="range") Range
-        .panel__switch
-            input.panel__switch-input(id="vertical" name="vertical" type="checkbox")
-            label.panel__switch-label(for="vertical") Vertical
-        .panel__switch
-            input.panel__switch-input(id="scale" name="scale" type="checkbox")
-            label.panel__switch-label(for="scale") Scale
-        .panel__switch
-            input.panel__switch-input(id="tip" name="tip" type="checkbox")
-            label.panel__switch-label(for="tip") Tip
-        .panel__switch
-            input.panel__switch-input(id="bar" name="bar" type="checkbox")
-            label.panel__switch-label(for="bar") Bar
+        .panel__left 
+            .panel__switch
+                input.panel__switch-input(id="range" name="range" type="checkbox")
+                label.panel__switch-label(for="range") Range
+            .panel__switch
+                input.panel__switch-input(id="vertical" name="vertical" type="checkbox")
+                label.panel__switch-label(for="vertical") Vertical
+            .panel__switch
+                input.panel__switch-input(id="scale" name="scale" type="checkbox")
+                label.panel__switch-label(for="scale") Scale
+            .panel__switch
+                input.panel__switch-input(id="tip" name="tip" type="checkbox")
+                label.panel__switch-label(for="tip") Tip
+            .panel__switch
+                input.panel__switch-input(id="bar" name="bar" type="checkbox")
+                label.panel__switch-label(for="bar") Bar
+
+        .panel__right 
+            .panel__number 
+                input.panel__number-input(id="min" name="min" type="number")
+                label.panel__number-label(for="min") Min
+            .panel__number 
+                input.panel__number-input(id="max" name="max" type="number")
+                label.panel__number-label(for="max") Max
+            .panel__number 
+                input.panel__number-input(id="step" name="step" type="number")
+                label.panel__number-label(for="step") Step
+            .panel__number 
+                input.panel__number-input(id="from" name="from" type="number")
+                label.panel__number-label(for="from") From
+            .panel__number 
+                input.panel__number-input(id="to" name="to" type="number")
+                label.panel__number-label(for="to") To

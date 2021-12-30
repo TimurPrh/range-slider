@@ -4,6 +4,7 @@ import './styles/style.scss';
 const rangeSliderWrapper = document.querySelector('#root');
 
 const SliderView = function SliderView(elem) {
+    this.elem = elem;
     this.render(elem);
 
     
@@ -102,6 +103,14 @@ SliderView.prototype.initEventListener = function initEventListener() {
     this.slider.addEventListener('mousedown', this.onClickBg);
 }
 SliderView.prototype.moveAt = function moveAt(obj, id) {
+    const numberChangedEvent = new CustomEvent('moveEvent', {
+        detail: {
+            obj: obj, 
+            id: id
+        }
+    });
+    this.elem.dispatchEvent(numberChangedEvent);
+
     const thumbOx = obj.thumbs[id].ox;
     const thumbValue = obj.thumbs[id].value;
     const trackOx = obj.track;
@@ -147,15 +156,15 @@ SliderView.prototype.updateLabel = function updateLabel(str, id) {
 
 const SliderModel = function SliderModel() {
     this.minThumbOffset = 0;
-    this.isRange = true;
-    this.isVertical = false;
-    this.viewScale = true;
-    this.viewTip = true;
-    this.viewBar = true;
-    this.initialMin = -10;
-    this.initialMax = 10;
-    this.initialStep = 2;
-    this.currentValue = [this.initialMin, this.initialMax];
+    this.isRange;
+    this.isVertical;
+    this.viewScale;
+    this.viewTip;
+    this.viewBar;
+    this.initialMin;
+    this.initialMax;
+    this.initialStep;
+    this.currentValue = [];
     this.sliderRange = [];
     this.outputOx = {thumbs: [
         {
@@ -169,8 +178,55 @@ const SliderModel = function SliderModel() {
     ],
     track: {}};
 }
-SliderModel.prototype.setRange = function setRange(flag) {
-    this.isRange = flag;
+SliderModel.prototype.setInitialSettings = function setInitialSettings(settings) {
+    let defaults = {
+        range: true,
+        vertical: false,
+        scale: true,
+        tip: true,
+        bar: true,
+        min: -2,
+        max: 2,
+        step: 0.5,
+        from: -2,
+        to: 2
+    }
+    defaults = {...defaults, ...settings};
+    this.isRange = defaults.range;
+    this.isVertical = defaults.vertical;
+    this.viewScale = defaults.scale;
+    this.viewTip = defaults.tip;
+    this.viewBar = defaults.bar;
+    this.initialMin = defaults.min;
+    this.initialMax = defaults.max;
+    this.initialStep = defaults.step;
+    this.currentValue[0] = defaults.from;
+    this.currentValue[1] = defaults.to;
+}
+SliderModel.prototype.setSettings = function setSettings(settings) {
+    let defaults = {
+        range: this.isRange,
+        vertical: this.isVertical,
+        scale: this.viewScale,
+        tip: this.viewTip,
+        bar: this.viewBar,
+        min: this.initialMin,
+        max: this.initialMax,
+        step: this.initialStep,
+        from: this.currentValue[0],
+        to: this.currentValue[1]
+    }
+    defaults = {...defaults, ...settings};
+    this.isRange = defaults.range;
+    this.isVertical = defaults.vertical;
+    this.viewScale = defaults.scale;
+    this.viewTip = defaults.tip;
+    this.viewBar = defaults.bar;
+    this.initialMin = defaults.min;
+    this.initialMax = defaults.max;
+    this.initialStep = defaults.step;
+    this.currentValue[0] = defaults.from;
+    this.currentValue[1] = defaults.to;
 }
 SliderModel.prototype.initView = function initView(fn) {
     this.sliderProps = [
@@ -191,7 +247,6 @@ SliderModel.prototype.initView = function initView(fn) {
     ];
     fn(this.sliderProps);
 }
-
 SliderModel.prototype.setInitialOutput = function setInitialOutput() {
     if (this.isVertical) {
         this.outputOx.thumbs.forEach((thumb, i) => {
@@ -258,6 +313,7 @@ SliderModel.prototype.calculateMove = function calculateMove(ox, id) {
             this.currentValue[id] = this.sliderProps[id].sliderMax;
         } else {
             this.currentValue[id] = this.sliderProps[id].sliderMax +  this.sliderRange[id] / (this.offsetWidth - this.sliderProps[id].offsetRight - this.sliderProps[id].offsetLeft) * (ox - this.offsetWidth + this.sliderProps[id].offsetRight);
+            this.currentValue[id] = Math.round(this.currentValue[id] * 10) / 10; //Пока непонятно: надо или нет или округлять до степени шага
         }
 
         if (ox < this.sliderProps[id].offsetLeft) {
@@ -317,10 +373,11 @@ const SliderController = function SliderController(sliderView, sliderModel) {
     this.sliderModel = sliderModel;
     this.currentThumb;
 };
-SliderController.prototype.initialize = function initialize() {
+SliderController.prototype.initialize = function initialize(settings) {
     this.sliderView.onMoveThumb = this.onMoveThumb.bind(this);
     this.sliderView.onClickBg = this.onClickBg.bind(this);
-    
+
+    this.sliderModel.setInitialSettings(settings);
     this.sliderModel.initView(this.initView.bind(this));
     this.sliderView.initEventListener();
 
@@ -332,10 +389,26 @@ SliderController.prototype.initialize = function initialize() {
 
     this.setInitialState();
 };
+SliderController.prototype.getSettings = function getSettings() {
+    return {
+        range: this.sliderModel.isRange,
+        vertical: this.sliderModel.isVertical,
+        scale: this.sliderModel.viewScale,
+        tip: this.sliderModel.viewTip,
+        bar: this.sliderModel.viewBar,
+        min: this.sliderModel.initialMin,
+        max: this.sliderModel.initialMax,
+        step: this.sliderModel.initialStep,
+        from: this.sliderModel.currentValue[0],
+        to: this.sliderModel.currentValue[1]
+    }
+};
 SliderController.prototype.destroyView = function destroyView() {
     this.sliderView.rangeSlider.remove();
 };
 SliderController.prototype.initView = function initView(props) {
+    props[0].sliderStep = props[0].sliderStep || 1; // Исключаем нулевой шаг
+    props[1].sliderStep = props[1].sliderStep || 1;
     this.sliderView.initParams([
         {
             sliderMin: props[0].sliderMin,
@@ -357,11 +430,20 @@ SliderController.prototype.setInitialState = function setInitialState() {
         this.sliderView.moveAt(this.sliderModel.outputOx, 0);
     }
 }
-SliderController.prototype.reEnit = function reEnit(key, value) {
+SliderController.prototype.reInitialize = function reInitialize(settings) {
     this.destroyView();
-    this.sliderModel[key] = value;
     this.sliderView.render(rangeSliderWrapper);
-    this.initialize();
+    this.sliderModel.setSettings(settings);
+    this.sliderModel.initView(this.initView.bind(this));
+    this.sliderView.initEventListener();
+
+    if (this.sliderModel.isVertical) {
+        this.sliderModel.offsetWidth = this.sliderView.offsetHeight;
+    } else {
+        this.sliderModel.offsetWidth = this.sliderView.offsetWidth;
+    }
+
+    this.setInitialState();
 }
 SliderController.prototype.onMoveThumb = function onMoveThumb(event) {
     event.preventDefault();
@@ -402,26 +484,55 @@ SliderController.prototype.onClickBg = function onClickBg(event) {
 const sliderView = new SliderView(rangeSliderWrapper);
 const sliderModel = new SliderModel();
 const sliderController = new SliderController(sliderView, sliderModel);
-sliderController.initialize();
+sliderController.initialize({});
 
-document.querySelectorAll('.panel__switch').forEach(input => {
-    input.addEventListener('input', (e) => {
+
+const inputFrom = document.querySelector('.panel__number #from');
+const inputTo = document.querySelector('.panel__number #to');
+rangeSliderWrapper.addEventListener('moveEvent', function (e) {
+    if (e.detail.id == 0) {
+        inputFrom.value = e.detail.obj.thumbs[0].value;
+    } else if (e.detail.id == 1) {
+        inputTo.value = e.detail.obj.thumbs[1].value;
+    }
+});
+
+document.querySelectorAll('.panel__switch-input, .panel__number-input').forEach(input => {
+    const settings = sliderController.getSettings();
+    input.type === "checkbox" ? input.checked = settings[input.name] : input.value = settings[input.name];
+    input.addEventListener('change', (e) => {
         switch (e.target.name) {
             case 'range':
-                sliderController.reEnit('isRange', !e.target.checked);
+                sliderController.reInitialize({range: e.target.checked});
                 break;
             case 'vertical':
-                sliderController.reEnit('isVertical', e.target.checked);
+                sliderController.reInitialize({vertical: e.target.checked});
                 break;
             case 'scale':
-                sliderController.reEnit('viewScale', e.target.checked);
+                sliderController.reInitialize({scale: e.target.checked});
                 break;
             case 'tip':
-                sliderController.reEnit('viewTip', e.target.checked);
+                sliderController.reInitialize({tip: e.target.checked});
                 break;
             case 'bar':
-                sliderController.reEnit('viewBar', e.target.checked);
+                sliderController.reInitialize({bar: e.target.checked});
+                break;
+            case 'min':
+                sliderController.reInitialize({min: parseInt(e.target.value)});
+                break;
+            case 'max':
+                sliderController.reInitialize({max: parseInt(e.target.value)});
+                break;
+            case 'step':
+                sliderController.reInitialize({step: parseInt(e.target.value)});
+                break;
+            case 'from':
+                sliderController.reInitialize({from: parseInt(e.target.value)});
+                break;
+            case 'to':
+                sliderController.reInitialize({to: parseInt(e.target.value)});
                 break;
         }
     })
 });
+

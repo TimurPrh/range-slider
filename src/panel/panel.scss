@@ -1,5 +1,7 @@
 .panel {
     padding-top: 30px;
+    display: grid;
+    grid-template-columns: auto auto;
     &__switch {
         margin-bottom: 10px;
         position: relative;
@@ -93,6 +95,33 @@
                     }
                 }
             }
+        }
+    }
+    &__number {
+        margin-bottom: 10px;
+        height: 34px;
+        width: 100%;
+        
+        &-input {
+            padding: 13px 15px;
+            width: 100px;
+            height: 100%;
+            background: #FFFFFF;
+            border: 1px solid rgba(31, 32, 65, 0.25);
+            border-radius: 4px;
+            outline: none;
+            font-size: 16px;
+            &:hover, &:focus, &:focus-visible {
+                border: 1px solid rgba(31, 32, 65, 0.50);
+                border-radius: 4px;
+                color: rgba(31, 32, 65, 0.75);
+            }
+            &::placeholder {
+                color: rgba(31, 32, 65, 0.25);
+            }
+        }
+        &-label {
+            padding-left: 10px;
         }
     }
 }
