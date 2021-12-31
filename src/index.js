@@ -34,7 +34,7 @@ SliderView.prototype.render = function render(elem) {
     this.track = this.rangeSlider.querySelector('.range-slider__range-bg');
     this.sliderInputs = this.rangeSlider.querySelectorAll('input');
 }
-SliderView.prototype.initParams = function initParams(viewModel, isVertical, isRange, scale, tip, bar) {
+SliderView.prototype.initParams = function initParams(viewModel, isVertical, isRange, scale, tip, bar, stepDegree) {
     this.isVertical = isVertical;
     this.isRange = isRange;
     this.scale = scale;
@@ -57,7 +57,7 @@ SliderView.prototype.initParams = function initParams(viewModel, isVertical, isR
             let stepValue = viewModel[0].sliderMax;
             for (let i = 0; i < stepCount; i++) {
                 scaleElement.innerHTML += `<li>${stepValue}</li>`;
-                stepValue -= viewModel[0].sliderStep;
+                stepValue = this.roundValue((stepValue - viewModel[0].sliderStep), stepDegree);
             }
             scaleElement.style.gridTemplateRows = `repeat(${stepCount}, ${stepHeight}px)`;
             this.slider.parentNode.style.display = 'flex';
@@ -70,7 +70,8 @@ SliderView.prototype.initParams = function initParams(viewModel, isVertical, isR
             let stepValue = viewModel[0].sliderMin;
             for (let i = 0; i < stepCount; i++) {
                 scaleElement.innerHTML += `<li>${stepValue}</li>`;
-                stepValue += viewModel[0].sliderStep;
+                // stepValue += viewModel[0].sliderStep;
+                stepValue = this.roundValue((stepValue + viewModel[0].sliderStep), stepDegree);
             }
             scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${stepWidth}px)`;
             this.slider.parentNode.append(scaleElement);
@@ -152,6 +153,56 @@ SliderView.prototype.updateInputValue = function updateInputValue(val, id) {
 SliderView.prototype.updateLabel = function updateLabel(str, id) {
     this.labels[id].innerHTML = str;
 }
+SliderView.prototype.roundValue = function roundValue(val, deg) {
+    (function() {
+        /**
+         * Корректировка округления десятичных дробей.
+         *
+         * @param {String}  type  Тип корректировки.
+         * @param {Number}  value Число.
+         * @param {Integer} exp   Показатель степени (десятичный логарифм основания корректировки).
+         * @returns {Number} Скорректированное значение.
+         */
+        function decimalAdjust(type, value, exp) {
+            // Если степень не определена, либо равна нулю...
+            if (typeof exp === 'undefined' || +exp === 0) {
+                return Math[type](value);
+            }
+            value = +value;
+            exp = +exp;
+            // Если значение не является числом, либо степень не является целым числом...
+            if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+                return NaN;
+            }
+            // Сдвиг разрядов
+            value = value.toString().split('e');
+            value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+            // Обратный сдвиг
+            value = value.toString().split('e');
+            return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+        }
+      
+        // Десятичное округление к ближайшему
+        if (!Math.round10) {
+            Math.round10 = function(value, exp) {
+                return decimalAdjust('round', value, exp);
+            };
+        }
+        // Десятичное округление вниз
+        if (!Math.floor10) {
+            Math.floor10 = function(value, exp) {
+                return decimalAdjust('floor', value, exp);
+            };
+        }
+        // Десятичное округление вверх
+        if (!Math.ceil10) {
+            Math.ceil10 = function(value, exp) {
+                return decimalAdjust('ceil', value, exp);
+            };
+        }
+    })();
+    return Math.round10(val, deg)
+}
 
 
 const SliderModel = function SliderModel() {
@@ -185,12 +236,24 @@ SliderModel.prototype.setInitialSettings = function setInitialSettings(settings)
         scale: true,
         tip: true,
         bar: true,
-        min: -2,
-        max: 2,
-        step: 0.5,
-        from: -2,
-        to: 2
+        min: 5,
+        max: 65,
+        step: 10,
+        from: 5,
+        to: 15
     }
+    // let defaults = {
+    //     range: true,
+    //     vertical: false,
+    //     scale: true,
+    //     tip: true,
+    //     bar: true,
+    //     min: 0,
+    //     max: 100,
+    //     step: 10,
+    //     from: 10,
+    //     to: 20
+    // }
     defaults = {...defaults, ...settings};
     this.isRange = defaults.range;
     this.isVertical = defaults.vertical;
@@ -202,6 +265,8 @@ SliderModel.prototype.setInitialSettings = function setInitialSettings(settings)
     this.initialStep = defaults.step;
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
+
+    this.stepDegree = Math.min(this.calculateSagnificantDegree(this.initialMin), this.calculateSagnificantDegree(this.initialStep), this.calculateSagnificantDegree(this.initialMax));
 }
 SliderModel.prototype.setSettings = function setSettings(settings) {
     let defaults = {
@@ -217,6 +282,9 @@ SliderModel.prototype.setSettings = function setSettings(settings) {
         to: this.currentValue[1]
     }
     defaults = {...defaults, ...settings};
+    console.group('set settings');
+    console.log(defaults);
+    console.groupEnd();
     this.isRange = defaults.range;
     this.isVertical = defaults.vertical;
     this.viewScale = defaults.scale;
@@ -227,6 +295,67 @@ SliderModel.prototype.setSettings = function setSettings(settings) {
     this.initialStep = defaults.step;
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
+
+    this.stepDegree = Math.min(this.calculateSagnificantDegree(this.initialMin), this.calculateSagnificantDegree(this.initialStep), this.calculateSagnificantDegree(this.initialMax));
+}
+SliderModel.prototype.calculateSagnificantDegree = function calculateSagnificantDegree(val) {
+    const significant = val.toExponential().replace(/^([0-9]+)\.?([0-9]+)?e[\+\-0-9]*$/g, "$1$2").length, //количество значящих цифр
+        comma = val.toString().indexOf('.'),
+        len = val.toString().length;
+    if (comma === -1) {
+        return len - significant
+    }
+    return comma - len + 1
+}
+SliderModel.prototype.roundValue = function roundValue(val, deg) {
+    (function() {
+        /**
+         * Корректировка округления десятичных дробей.
+         *
+         * @param {String}  type  Тип корректировки.
+         * @param {Number}  value Число.
+         * @param {Integer} exp   Показатель степени (десятичный логарифм основания корректировки).
+         * @returns {Number} Скорректированное значение.
+         */
+        function decimalAdjust(type, value, exp) {
+            // Если степень не определена, либо равна нулю...
+            if (typeof exp === 'undefined' || +exp === 0) {
+                return Math[type](value);
+            }
+            value = +value;
+            exp = +exp;
+            // Если значение не является числом, либо степень не является целым числом...
+            if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+                return NaN;
+            }
+            // Сдвиг разрядов
+            value = value.toString().split('e');
+            value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+            // Обратный сдвиг
+            value = value.toString().split('e');
+            return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+        }
+      
+        // Десятичное округление к ближайшему
+        if (!Math.round10) {
+            Math.round10 = function(value, exp) {
+                return decimalAdjust('round', value, exp);
+            };
+        }
+        // Десятичное округление вниз
+        if (!Math.floor10) {
+            Math.floor10 = function(value, exp) {
+                return decimalAdjust('floor', value, exp);
+            };
+        }
+        // Десятичное округление вверх
+        if (!Math.ceil10) {
+            Math.ceil10 = function(value, exp) {
+                return decimalAdjust('ceil', value, exp);
+            };
+        }
+    })();
+    return Math.round10(val, deg)
 }
 SliderModel.prototype.initView = function initView(fn) {
     this.sliderProps = [
@@ -288,6 +417,7 @@ SliderModel.prototype.calculateMove = function calculateMove(ox, id) {
             this.currentValue[id] = this.sliderProps[id].sliderMax;
         } else {
             this.currentValue[id] = this.sliderProps[id].sliderMax - this.sliderRange[id] / (this.offsetWidth - this.sliderProps[id].offsetRight - this.sliderProps[id].offsetLeft) * (ox - this.sliderProps[id].offsetLeft);
+            this.currentValue[id] = this.roundValue(this.currentValue[id], this.stepDegree);
         }
 
         if (ox < this.sliderProps[id].offsetLeft) {
@@ -313,7 +443,8 @@ SliderModel.prototype.calculateMove = function calculateMove(ox, id) {
             this.currentValue[id] = this.sliderProps[id].sliderMax;
         } else {
             this.currentValue[id] = this.sliderProps[id].sliderMax +  this.sliderRange[id] / (this.offsetWidth - this.sliderProps[id].offsetRight - this.sliderProps[id].offsetLeft) * (ox - this.offsetWidth + this.sliderProps[id].offsetRight);
-            this.currentValue[id] = Math.round(this.currentValue[id] * 10) / 10; //Пока непонятно: надо или нет или округлять до степени шага
+            // this.currentValue[id] = Math.round(this.currentValue[id] / 10**(this.stepDegree)) * 10**(this.stepDegree); //округление до степени шага
+            this.currentValue[id] = this.roundValue(this.currentValue[id], this.stepDegree);
         }
 
         if (ox < this.sliderProps[id].offsetLeft) {
@@ -399,8 +530,10 @@ SliderController.prototype.getSettings = function getSettings() {
         min: this.sliderModel.initialMin,
         max: this.sliderModel.initialMax,
         step: this.sliderModel.initialStep,
-        from: this.sliderModel.currentValue[0],
-        to: this.sliderModel.currentValue[1]
+        // from: this.sliderModel.currentValue[0],
+        // to: this.sliderModel.currentValue[1]
+        from: this.sliderView.sliderInputs[0].value,
+        to: this.sliderView.sliderInputs[1].value
     }
 };
 SliderController.prototype.destroyView = function destroyView() {
@@ -420,7 +553,7 @@ SliderController.prototype.initView = function initView(props) {
             sliderMax: props[1].sliderMax,
             sliderStep: props[1].sliderStep,
         }
-    ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip, this.sliderModel.viewBar);
+    ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip, this.sliderModel.viewBar, this.sliderModel.stepDegree);
 }
 SliderController.prototype.setInitialState = function setInitialState() {
     this.sliderModel.setInitialOutput();
@@ -499,8 +632,28 @@ rangeSliderWrapper.addEventListener('moveEvent', function (e) {
 
 document.querySelectorAll('.panel__switch-input, .panel__number-input').forEach(input => {
     const settings = sliderController.getSettings();
-    input.type === "checkbox" ? input.checked = settings[input.name] : input.value = settings[input.name];
+    if (input.type === 'number') {
+        input.value = settings[input.name];
+        input.name !== 'step' && input.name !== 'min' ? input.min = settings.min : null;
+        input.name === 'min' ? input.min = settings.min - settings.step : null;
+        input.step = settings.step;
+    } else if (input.type === 'checkbox') {
+        input.checked = settings[input.name];
+    }
     input.addEventListener('change', (e) => {
+        changeInputs(e);
+    });
+    input.addEventListener('mousewheel', e => {
+        if (e.wheelDelta > 0) {
+            e.target.value = +e.target.value + +e.target.step;
+        } else if (e.wheelDelta < 0) {
+            e.target.value = +e.target.value - +e.target.step;
+        }
+        changeInputs(e);
+    });
+
+
+    function changeInputs(e) {
         switch (e.target.name) {
             case 'range':
                 sliderController.reInitialize({range: e.target.checked});
@@ -518,21 +671,33 @@ document.querySelectorAll('.panel__switch-input, .panel__number-input').forEach(
                 sliderController.reInitialize({bar: e.target.checked});
                 break;
             case 'min':
-                sliderController.reInitialize({min: parseInt(e.target.value)});
+                document.querySelectorAll('.panel__number-input').forEach(item => {
+                    item.name !== 'step' && item.name !== 'min' ? item.min = parseFloat(e.target.value) : null;
+                    item.name === 'min' ? item.min = parseFloat(e.target.value) - item.step : null;
+                });
+                sliderController.reInitialize({min: parseFloat(e.target.value)});
                 break;
             case 'max':
-                sliderController.reInitialize({max: parseInt(e.target.value)});
+                sliderController.reInitialize({max: parseFloat(e.target.value)});
                 break;
             case 'step':
-                sliderController.reInitialize({step: parseInt(e.target.value)});
+                const step = parseFloat(e.target.value);
+                document.querySelectorAll('.panel__number-input').forEach(item => {
+                    if (e.wheelDelta) {
+                        item.name !== 'step' ? item.step = step : null;
+                    } else {
+                        item.step = step;
+                    }
+                    item.name === 'min' ? item.min = item.value - step : null;
+                });
+                sliderController.reInitialize({step: parseFloat(e.target.value)});
                 break;
             case 'from':
-                sliderController.reInitialize({from: parseInt(e.target.value)});
+                sliderController.reInitialize({from: parseFloat(e.target.value)});
                 break;
             case 'to':
-                sliderController.reInitialize({to: parseInt(e.target.value)});
+                sliderController.reInitialize({to: parseFloat(e.target.value)});
                 break;
         }
-    })
+    }
 });
-
