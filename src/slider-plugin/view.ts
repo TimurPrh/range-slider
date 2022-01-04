@@ -1,11 +1,11 @@
-const SliderView = function SliderView(elem) {
+const SliderView = function SliderView(elem: Element) {
     this.elem = elem;
     this.render(elem);
-    
+
     this.onMoveThumb = null;
     this.onClickBg = null;
-}
-SliderView.prototype.render = function render(elem) {
+};
+SliderView.prototype.render = function render(elem: Element) {
     const sliderElement = document.createElement('div');
     sliderElement.classList.add('range-slider');
     sliderElement.innerHTML = `<div class="range-slider__outer">
@@ -18,7 +18,7 @@ SliderView.prototype.render = function render(elem) {
                                         <input id="a" class="range-slider__input" type="range">
                                         <input id="b" class="range-slider__input" type="range">
                                     </div>
-                                </div>`
+                                </div>`;
     elem.append(sliderElement);
 
     this.rangeSlider = elem.querySelector('.range-slider');
@@ -27,8 +27,8 @@ SliderView.prototype.render = function render(elem) {
     this.thumbs = this.rangeSlider.querySelectorAll('.range-slider__thumb');
     this.track = this.rangeSlider.querySelector('.range-slider__range-bg');
     this.sliderInputs = this.rangeSlider.querySelectorAll('input');
-}
-SliderView.prototype.initParams = function initParams(viewModel, isVertical, isRange, scale, tip, bar, stepDegree) {
+};
+SliderView.prototype.initParams = function initParams(viewModel: [{sliderMin: number, sliderMax: number, sliderStep: number}], isVertical: boolean, isRange: boolean, scale: boolean, tip: boolean, bar: boolean, stepDegree: number) {
     this.isVertical = isVertical;
     this.isRange = isRange;
     this.scale = scale;
@@ -55,7 +55,7 @@ SliderView.prototype.initParams = function initParams(viewModel, isVertical, isR
             }
             scaleElement.style.gridTemplateRows = `repeat(${stepCount}, ${stepHeight}px)`;
             this.slider.parentNode.style.display = 'flex';
-            this.slider.parentNode.append(scaleElement); 
+            this.slider.parentNode.append(scaleElement);
         } else {
             const scaleElement = document.createElement('ul');
             scaleElement.classList.add('range-slider__scale');
@@ -64,14 +64,13 @@ SliderView.prototype.initParams = function initParams(viewModel, isVertical, isR
             let stepValue = viewModel[0].sliderMin;
             for (let i = 0; i < stepCount; i++) {
                 scaleElement.innerHTML += `<li>${stepValue}</li>`;
-                // stepValue += viewModel[0].sliderStep;
                 stepValue = this.roundValue((stepValue + viewModel[0].sliderStep), stepDegree);
             }
             scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${stepWidth}px)`;
             this.slider.parentNode.append(scaleElement);
         }
     }
-    
+
     if (!isRange) {
         this.thumbs[0].style.display = 'none';
         this.labels[0].style.display = 'none';
@@ -85,33 +84,34 @@ SliderView.prototype.initParams = function initParams(viewModel, isVertical, isR
     } else {
         this.track.style.display = 'block';
     }
-    
-    viewModel.forEach((model, id) => {
+
+    viewModel.forEach((model: { sliderMin: number; sliderMax: number; sliderStep: number; }, id: number) => {
         this.sliderInputs[id].min = model.sliderMin;
         this.sliderInputs[id].max = model.sliderMax;
         this.sliderInputs[id].step = model.sliderStep;
     });
-}
+};
 SliderView.prototype.initEventListener = function initEventListener() {
-    this.isRange ? this.thumbs.forEach(thumb => thumb.addEventListener('mousedown', this.onMoveThumb)) : this.thumbs[1].addEventListener('mousedown', this.onMoveThumb);
-    
+    if (this.isRange) {
+        this.thumbs.forEach((thumb: HTMLElement) => thumb.addEventListener('mousedown', this.onMoveThumb));
+    } else {
+        this.thumbs[1].addEventListener('mousedown', this.onMoveThumb);
+    }
+
     this.slider.addEventListener('mousedown', this.onClickBg);
-}
-SliderView.prototype.moveAt = function moveAt(obj, id) {
+};
+SliderView.prototype.moveAt = function moveAt(obj: { thumbs: [{ ox: number, value: number }]; track: {begin: number, end: number}; }, id: number) {
     const numberChangedEvent = new CustomEvent('moveThumbEvent', {
         detail: {
-            obj: obj, 
-            id: id
-        }
+            obj,
+            id,
+        },
     });
     this.elem.dispatchEvent(numberChangedEvent);
 
     const thumbOx = obj.thumbs[id].ox;
     const thumbValue = obj.thumbs[id].value;
     const trackOx = obj.track;
-
-    console.log(obj.thumbs, id);
-    console.log(`moveAt --- ${thumbOx}`);
 
     this.renderTrack(trackOx.begin, trackOx.end);
     this.updateInputValue(thumbValue, id);
@@ -134,68 +134,36 @@ SliderView.prototype.moveAt = function moveAt(obj, id) {
             this.labels[id].style.display = 'none';
         }
     }
-}
-SliderView.prototype.renderTrack = function renderTrack(begin, end) {
-    this.isVertical ? this.track.style.marginTop = `${begin}px` : this.track.style.marginLeft = `${begin}px`;
-    this.isVertical ? this.track.style.height = `${end - begin}px` : this.track.style.width = `${end - begin}px`;
-}
-SliderView.prototype.updateInputValue = function updateInputValue(val, id) {
+};
+SliderView.prototype.renderTrack = function renderTrack(begin: number, end: number) {
+    if (this.isVertical) {
+        this.track.style.marginTop = `${begin}px`;
+        this.track.style.height = `${end - begin}px`;
+    } else {
+        this.track.style.marginLeft = `${begin}px`;
+        this.track.style.width = `${end - begin}px`;
+    }
+};
+SliderView.prototype.updateInputValue = function updateInputValue(val: number, id: string | number) {
     this.sliderInputs[id].value = val;
-    console.log(`input value --- ${val} , ${id}`);
     this.updateLabel(this.sliderInputs[id].value, id);
-}
-SliderView.prototype.updateLabel = function updateLabel(str, id) {
+};
+SliderView.prototype.updateLabel = function updateLabel(str: number, id: string | number) {
     this.labels[id].innerHTML = str;
-}
-SliderView.prototype.roundValue = function roundValue(val, deg) {
-    (function() {
-        /**
-         * Корректировка округления десятичных дробей.
-         *
-         * @param {String}  type  Тип корректировки.
-         * @param {Number}  value Число.
-         * @param {Integer} exp   Показатель степени (десятичный логарифм основания корректировки).
-         * @returns {Number} Скорректированное значение.
-         */
-        function decimalAdjust(type, value, exp) {
-            // Если степень не определена, либо равна нулю...
-            if (typeof exp === 'undefined' || +exp === 0) {
-                return Math[type](value);
-            }
-            value = +value;
-            exp = +exp;
-            // Если значение не является числом, либо степень не является целым числом...
-            if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
-                return NaN;
-            }
-            // Сдвиг разрядов
-            value = value.toString().split('e');
-            value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
-            // Обратный сдвиг
-            value = value.toString().split('e');
-            return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-        }
-      
-        // Десятичное округление к ближайшему
-        if (!Math.round10) {
-            Math.round10 = function(value, exp) {
-                return decimalAdjust('round', value, exp);
-            };
-        }
-        // Десятичное округление вниз
-        if (!Math.floor10) {
-            Math.floor10 = function(value, exp) {
-                return decimalAdjust('floor', value, exp);
-            };
-        }
-        // Десятичное округление вверх
-        if (!Math.ceil10) {
-            Math.ceil10 = function(value, exp) {
-                return decimalAdjust('ceil', value, exp);
-            };
-        }
-    })();
-    return Math.round10(val, deg)
-}
+};
+SliderView.prototype.roundValue = function roundValue(val: number, deg: number) {
+    // Если степень не определена, либо равна нулю...
+    if (typeof deg === 'undefined' || +deg === 0) {
+        return Math.round(val);
+    }
+    let value: number = +val;
+    const exp: number = +deg;
+    // Сдвиг разрядов
+    let valueStr = value.toString().split('e');
+    value = Math.round(+(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] - exp) : -exp}`));
+    // Обратный сдвиг
+    valueStr = value.toString().split('e');
+    return +(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] + exp) : exp}`);
+};
 
 export default SliderView;

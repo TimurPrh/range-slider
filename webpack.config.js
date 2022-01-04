@@ -55,14 +55,14 @@ module.exports = {
     context: path.resolve(__dirname, 'src'),
     mode: 'development',
     entry: {
-        'main': ['@babel/polyfill', './index.js'],
+        'main': ['@babel/polyfill', './index.ts'],
     },
     output: {
         filename: filename('js'),
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
-        extensions: ['.js']
+        extensions: ['.ts', '.js']
     },
     optimization: optimization(),
     devServer: {
@@ -123,22 +123,22 @@ module.exports = {
                 use: cssLoaders('sass-loader')
             },
             {
-                test: /\.m?js$/,
-                exclude: /(node_modules)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env']
-                    }
-                }
-            },
-            {
                 test: /\.m?ts$/,
                 exclude: /(node_modules)/,
                 use: {
                     loader: 'babel-loader',
                     options: {
                         presets: ['@babel/preset-env', '@babel/preset-typescript']
+                    }
+                }
+            },
+            {
+                test: /\.m?js$/,
+                exclude: /(node_modules)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
                     }
                 }
             },
