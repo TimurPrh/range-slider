@@ -43,6 +43,7 @@ SliderModel.prototype.setInitialSettings = function setInitialSettings(settings:
         to: 100,
     };
     defaults = { ...defaults, ...settings };
+    const step: number = defaults.step || 1; // Исключаем нулевой шаг
     this.isRange = defaults.range;
     this.isVertical = defaults.vertical;
     this.viewScale = defaults.scale;
@@ -50,7 +51,7 @@ SliderModel.prototype.setInitialSettings = function setInitialSettings(settings:
     this.viewBar = defaults.bar;
     this.initialMin = defaults.min;
     this.initialMax = defaults.max;
-    this.initialStep = defaults.step;
+    this.initialStep = step;
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
 
@@ -70,9 +71,9 @@ SliderModel.prototype.setSettings = function setSettings(settings: sliderSetting
         to: this.currentValue[1],
     };
     defaults = { ...defaults, ...settings };
-    console.group('set settings');
-    console.log(defaults);
-    console.groupEnd();
+
+    const step: number = defaults.step || 1; // Исключаем нулевой шаг
+
     this.isRange = defaults.range;
     this.isVertical = defaults.vertical;
     this.viewScale = defaults.scale;
@@ -80,7 +81,7 @@ SliderModel.prototype.setSettings = function setSettings(settings: sliderSetting
     this.viewBar = defaults.bar;
     this.initialMin = defaults.min;
     this.initialMax = defaults.max;
-    this.initialStep = defaults.step;
+    this.initialStep = step;
     [this.oldFrom, this.oldTo] = this.currentValue;
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;

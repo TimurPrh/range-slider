@@ -13,12 +13,11 @@ SliderController.prototype.initialize = function initialize(settings: {
     step: number,
     from: number,
     to: number}) {
-    this.sliderView.onMoveThumb = this.onMoveThumb.bind(this);
+    this.sliderView.thumbsModule.onMoveThumb = this.onMoveThumb.bind(this);
     this.sliderView.onClickBg = this.onClickBg.bind(this);
 
     this.sliderModel.setInitialSettings(settings);
     this.sliderModel.initView(this.initView.bind(this));
-    this.sliderView.initEventListener();
 
     if (this.sliderModel.isVertical) {
         this.sliderModel.offsetWidth = this.sliderView.offsetHeight;
@@ -40,12 +39,9 @@ SliderController.prototype.getSettings = function getSettings() {
         step: this.sliderModel.initialStep,
         // from: this.sliderModel.currentValue[0],
         // to: this.sliderModel.currentValue[1]
-        from: this.sliderView.sliderInputs[0].value,
-        to: this.sliderView.sliderInputs[1].value,
+        from: this.sliderView.inputModule.inputs[0].value,
+        to: this.sliderView.inputModule.inputs[1].value,
     };
-};
-SliderController.prototype.destroyView = function destroyView() {
-    this.sliderView.rangeSlider.remove();
 };
 SliderController.prototype.initView = function initView(props: [
     {
@@ -62,18 +58,16 @@ SliderController.prototype.initView = function initView(props: [
         offsetLeft: number,
         offsetRight: number,
     }]) {
-    const stepFrom: number = props[0].sliderStep || 1; // Исключаем нулевой шаг
-    const stepTo: number = props[1].sliderStep || 1; // Исключаем нулевой шаг
     this.sliderView.initParams([
         {
             sliderMin: props[0].sliderMin,
             sliderMax: props[0].sliderMax,
-            sliderStep: stepFrom,
+            sliderStep: props[0].sliderStep,
         },
         {
             sliderMin: props[1].sliderMin,
             sliderMax: props[1].sliderMax,
-            sliderStep: stepTo,
+            sliderStep: props[1].sliderStep,
         },
     ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip, this.sliderModel.viewBar, this.sliderModel.stepDegree);
 };
@@ -86,11 +80,8 @@ SliderController.prototype.setInitialState = function setInitialState() {
     }
 };
 SliderController.prototype.reInitialize = function reInitialize(settings) {
-    this.destroyView();
-    this.sliderView.render(this.sliderView.elem);
     this.sliderModel.setSettings(settings);
     this.sliderModel.initView(this.initView.bind(this));
-    this.sliderView.initEventListener();
 
     if (this.sliderModel.isVertical) {
         this.sliderModel.offsetWidth = this.sliderView.offsetHeight;

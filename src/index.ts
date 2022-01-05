@@ -19,17 +19,19 @@ const rangeSlider = new RangeSlider(rangeSliderWrapper, {
 });
 const panel = new Panel(panelWrapper, rangeSlider.getSettings());
 
-rangeSliderWrapper.addEventListener('moveThumbEvent', (e) => {
+function fromAndToValuesHandler(e: CustomEvent) {
     if (e.detail.id === 0) {
         panel.changeFromValue(e.detail.obj.thumbs[0].value);
     } else if (e.detail.id === 1) {
         panel.changeToValue(e.detail.obj.thumbs[1].value);
     }
-});
+}
+rangeSliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(this));
 
-panelWrapper.addEventListener('changedInputEvent', (e) => {
+function configurationHandler(e: CustomEvent) {
     const obj = {};
     obj[e.detail.key] = e.detail.value;
 
     rangeSlider.reInitialize(obj);
-});
+}
+panelWrapper.addEventListener('changedInputEvent', configurationHandler.bind(this));
