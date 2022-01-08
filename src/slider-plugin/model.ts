@@ -55,7 +55,9 @@ SliderModel.prototype.setInitialSettings = function setInitialSettings(settings:
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
 
-    this.stepDegree = Math.min(this.calculateSagnificantDegree(this.initialMin), this.calculateSagnificantDegree(this.initialStep), this.calculateSagnificantDegree(this.initialMax));
+    const degrees = [this.initialMin, this.initialStep, this.initialMax].filter((item) => item !== 0).map((item) => this.calculateSagnificantDegree(item));
+
+    this.stepDegree = Math.min(...degrees);
 };
 SliderModel.prototype.setSettings = function setSettings(settings: sliderSettings) {
     let defaults = {
@@ -86,7 +88,9 @@ SliderModel.prototype.setSettings = function setSettings(settings: sliderSetting
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
 
-    this.stepDegree = Math.min(this.calculateSagnificantDegree(this.initialMin), this.calculateSagnificantDegree(this.initialStep), this.calculateSagnificantDegree(this.initialMax));
+    const degrees = [this.initialMin, this.initialStep, this.initialMax].filter((item) => item !== 0).map((item) => this.calculateSagnificantDegree(item));
+
+    this.stepDegree = Math.min(...degrees);
 };
 SliderModel.prototype.calculateSagnificantDegree = function calculateSagnificantDegree(val1: number) {
     const val: number = Math.abs(val1);
@@ -107,10 +111,10 @@ SliderModel.prototype.roundValue = function roundValue(val: number, deg: number)
     const exp: number = +deg;
     // Сдвиг разрядов
     let valueStr = value.toString().split('e');
-    value = Math.round(+(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] - exp) : -exp}`));
+    value = Math.round(+(`${valueStr[0]}e${-exp}`));
     // Обратный сдвиг
     valueStr = value.toString().split('e');
-    return +(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] + exp) : exp}`);
+    return +(`${valueStr[0]}e${exp}`);
 };
 SliderModel.prototype.initView = function initView(fn: (props: any) => void) {
     this.sliderProps = [
@@ -147,7 +151,8 @@ SliderModel.prototype.setInitialOutput = function setInitialOutput() {
         if (this.currentValue[1] <= this.initialMin) {
             this.currentValue[1] = this.initialMin + this.initialStep;
         }
-    } else if (!this.isRange) {
+    }
+    if (!this.isRange) {
         if (this.currentValue[1] <= this.initialMin) {
             this.currentValue[1] = this.initialMin;
         }
