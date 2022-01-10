@@ -490,6 +490,9 @@ describe('Model: roundValue', () => {
     test('should round value', () => {
         expect(model.roundValue(6.6, 0)).toEqual(7);
     });
+    test('should round value', () => {
+        expect(model.roundValue(7.105427357601002e-15, -1)).toEqual(0);
+    });
 });
 
 describe('Model: initView', () => {

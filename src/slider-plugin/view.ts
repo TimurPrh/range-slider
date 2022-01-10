@@ -48,8 +48,8 @@ SliderView.prototype.initParams = function initParams(viewModel: [{sliderMin: nu
     this.trackModule.render(bar);
     this.thumbsModule.render(isRange);
     this.labelsModule.render();
-    this.scaleModule.render(scale, isVertical, viewModel[0], stepDegree, this.offsetWidth, this.offsetHeight);
     this.inputModule.render(viewModel);
+    this.scaleModule.render(scale, isVertical, viewModel[0], stepDegree, this.offsetWidth, this.offsetHeight);
 
     this.slider.addEventListener('mousedown', this.onClickBg);
 };

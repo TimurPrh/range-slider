@@ -111,10 +111,10 @@ SliderModel.prototype.roundValue = function roundValue(val: number, deg: number)
     const exp: number = +deg;
     // Сдвиг разрядов
     let valueStr = value.toString().split('e');
-    value = Math.round(+(`${valueStr[0]}e${-exp}`));
+    value = Math.round(+(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] - exp) : -exp}`));
     // Обратный сдвиг
     valueStr = value.toString().split('e');
-    return +(`${valueStr[0]}e${exp}`);
+    return +(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] + exp) : exp}`);
 };
 SliderModel.prototype.initView = function initView(fn: (props: any) => void) {
     this.sliderProps = [
