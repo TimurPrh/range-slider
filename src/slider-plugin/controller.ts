@@ -17,13 +17,6 @@ SliderController.prototype.initialize = function initialize(settings: {
     this.sliderView.onClickBg = this.onClickBg.bind(this);
 
     this.sliderModel.setInitialSettings(settings);
-    this.sliderModel.initView(this.initView.bind(this));
-
-    if (this.sliderModel.isVertical) {
-        this.sliderModel.offsetWidth = this.sliderView.offsetHeight;
-    } else {
-        this.sliderModel.offsetWidth = this.sliderView.offsetWidth;
-    }
 
     this.setInitialState();
 };
@@ -37,8 +30,6 @@ SliderController.prototype.getSettings = function getSettings() {
         min: this.sliderModel.initialMin,
         max: this.sliderModel.initialMax,
         step: this.sliderModel.initialStep,
-        // from: this.sliderModel.currentValue[0],
-        // to: this.sliderModel.currentValue[1]
         from: this.sliderView.inputModule.inputs[0].value,
         to: this.sliderView.inputModule.inputs[1].value,
     };
@@ -72,6 +63,14 @@ SliderController.prototype.initView = function initView(props: [
     ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip, this.sliderModel.viewBar, this.sliderModel.stepDegree);
 };
 SliderController.prototype.setInitialState = function setInitialState() {
+    this.sliderModel.initView(this.initView.bind(this));
+
+    if (this.sliderModel.isVertical) {
+        this.sliderModel.offsetWidth = this.sliderView.offsetHeight;
+    } else {
+        this.sliderModel.offsetWidth = this.sliderView.offsetWidth;
+    }
+
     this.sliderModel.setInitialOutput();
 
     this.sliderView.moveAt(this.sliderModel.outputOx, 1);
@@ -81,15 +80,19 @@ SliderController.prototype.setInitialState = function setInitialState() {
 };
 SliderController.prototype.reInitialize = function reInitialize(settings) {
     this.sliderModel.setSettings(settings);
-    this.sliderModel.initView(this.initView.bind(this));
-
-    if (this.sliderModel.isVertical) {
-        this.sliderModel.offsetWidth = this.sliderView.offsetHeight;
-    } else {
-        this.sliderModel.offsetWidth = this.sliderView.offsetWidth;
-    }
-
     this.setInitialState();
+};
+SliderController.prototype.setToValue = function setToValue(val: number) {
+    [this.sliderModel.oldFrom, this.sliderModel.oldTo] = this.sliderModel.currentValue;
+    this.sliderModel.currentValue[1] = val;
+    this.sliderModel.setInitialOutput();
+    this.sliderView.moveAt(this.sliderModel.outputOx, 1);
+};
+SliderController.prototype.setFromValue = function setFromValue(val: number) {
+    [this.sliderModel.oldFrom, this.sliderModel.oldTo] = this.sliderModel.currentValue;
+    this.sliderModel.currentValue[0] = val;
+    this.sliderModel.setInitialOutput();
+    this.sliderView.moveAt(this.sliderModel.outputOx, 0);
 };
 SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDefault: () => void; }) {
     event.preventDefault();

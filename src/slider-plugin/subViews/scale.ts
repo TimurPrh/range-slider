@@ -14,7 +14,10 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
         if (vertical) {
             const scaleElement = document.createElement('ul');
             scaleElement.classList.add('range-slider__scale', 'range-slider__scale_vertical');
-            const stepCount = Math.floor((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep) + 1;
+            let stepCount = Math.floor((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep) + 1;
+            if (stepCount > 200) {
+                stepCount = 200;
+            }
             const stepHeight = offsetHeight / (stepCount - 1);
             let stepValue = viewModel.sliderMax;
             for (let i = 0; i < stepCount; i++) {
@@ -54,7 +57,10 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
         } else {
             const scaleElement = document.createElement('ul');
             scaleElement.classList.add('range-slider__scale');
-            const stepCount = Math.floor((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep) + 1;
+            let stepCount = Math.floor((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep) + 1;
+            if (stepCount > 200) {
+                stepCount = 200;
+            }
             const stepWidth = offsetWidth / (stepCount - 1);
             let stepValue = viewModel.sliderMin;
             for (let i = 0; i < stepCount; i++) {

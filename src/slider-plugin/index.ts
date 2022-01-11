@@ -29,5 +29,11 @@ RangeSlider.prototype.getSettings = function getSettings() {
 RangeSlider.prototype.reInitialize = function reInitialize(settings: sliderSettings) {
     this.sliderController.reInitialize(settings);
 };
+RangeSlider.prototype.setToValue = function setToValue(val: number) {
+    this.sliderController.setToValue(val);
+};
+RangeSlider.prototype.setFromValue = function setFromValue(val: number) {
+    this.sliderController.setFromValue(val);
+};
 
 export default RangeSlider;

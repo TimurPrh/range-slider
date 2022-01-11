@@ -32,6 +32,16 @@ function configurationHandler(e: CustomEvent) {
     const obj = {};
     obj[e.detail.key] = e.detail.value;
 
-    rangeSlider.reInitialize(obj);
+    if (e.detail.key === 'to') {
+        rangeSlider.setToValue(e.detail.value);
+    } else if (e.detail.key === 'from') {
+        rangeSlider.setFromValue(e.detail.value);
+    } else {
+        rangeSlider.reInitialize(obj);
+    }
+
+    const realSettings = rangeSlider.getSettings();
+    panel.changeFromValue(realSettings.from);
+    panel.changeToValue(realSettings.to);
 }
 panelWrapper.addEventListener('changedInputEvent', configurationHandler.bind(this));

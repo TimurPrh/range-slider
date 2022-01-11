@@ -136,21 +136,28 @@ SliderModel.prototype.initView = function initView(fn: (props: any) => void) {
     fn(this.sliderProps);
 };
 SliderModel.prototype.setInitialOutput = function setInitialOutput() {
+    this.currentValue[1] = this.roundValue(this.initialMax + this.initialStep * Math.round((this.currentValue[1] - this.initialMax) / this.initialStep), this.stepDegree);
     if (this.isRange) {
+        this.currentValue[0] = this.roundValue(this.initialMax + this.initialStep * Math.round((this.currentValue[0] - this.initialMax) / this.initialStep), this.stepDegree);
+
         if (this.currentValue[0] >= this.oldTo) {
             this.currentValue[0] = this.oldTo - this.initialStep;
         }
         if (this.currentValue[1] <= this.oldFrom) {
             this.currentValue[1] = this.oldFrom + this.initialStep;
         }
+        if (this.currentValue[1] <= this.initialMin) {
+            this.currentValue[1] = this.initialMin + this.initialStep;
+        }
+        if (this.currentValue[1] >= this.initialMax) {
+            this.currentValue[1] = this.initialMax;
+        }
     }
     if (this.currentValue[0] >= this.initialMax) {
         this.currentValue[0] = this.initialMax - this.initialStep;
     }
-    if (this.isRange) {
-        if (this.currentValue[1] <= this.initialMin) {
-            this.currentValue[1] = this.initialMin + this.initialStep;
-        }
+    if (this.currentValue[0] <= this.initialMin) {
+        this.currentValue[0] = this.initialMin;
     }
     if (!this.isRange) {
         if (this.currentValue[1] <= this.initialMin) {
@@ -170,10 +177,7 @@ SliderModel.prototype.setInitialOutput = function setInitialOutput() {
         }
     }
 
-    this.calculateMove(this.outputOx.thumbs[1].ox, 1);
-    if (this.isRange) {
-        this.calculateMove(this.outputOx.thumbs[0].ox, 0);
-    }
+    this.calculateTrack();
 };
 SliderModel.prototype.calculateMove = function calculateMove(pos: number, id: number) {
     const viewStep = ((this.offsetWidth) * this.sliderProps[id].sliderStep) / (this.sliderProps[1].sliderMax - this.sliderProps[0].sliderMin);
@@ -236,6 +240,9 @@ SliderModel.prototype.calculateMove = function calculateMove(pos: number, id: nu
     this.outputOx.thumbs[id].ox = ox;
     this.outputOx.thumbs[id].value = this.currentValue[id];
 
+    this.calculateTrack();
+};
+SliderModel.prototype.calculateTrack = function calculateTrack(pos: number, id: number) {
     if (this.isRange) {
         if (this.isVertical) {
             this.outputOx.track = {
@@ -250,13 +257,13 @@ SliderModel.prototype.calculateMove = function calculateMove(pos: number, id: nu
         }
     } else if (this.isVertical) {
         this.outputOx.track = {
-            begin: ox,
+            begin: this.outputOx.thumbs[1].ox,
             end: this.offsetWidth,
         };
     } else {
         this.outputOx.track = {
             begin: 0,
-            end: ox,
+            end: this.outputOx.thumbs[1].ox,
         };
     }
 };
