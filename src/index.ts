@@ -7,23 +7,23 @@ const panelWrapper = document.querySelector('.js-main__panel');
 
 const rangeSlider = new RangeSlider(rangeSliderWrapper, {
     range: true,
-    vertical: false,
+    vertical: true,
     scale: true,
     tip: true,
     bar: true,
     min: 0,
-    max: 100,
-    step: 10,
-    from: 0,
-    to: 50,
+    max: 11,
+    step: 3,
+    from: 3,
+    to: 9,
 });
 const panel = new Panel(panelWrapper, rangeSlider.getSettings());
 
 function fromAndToValuesHandler(e: CustomEvent) {
     if (e.detail.id === 0) {
-        panel.changeFromValue(e.detail.obj.thumbs[0].value);
+        panel.changeFromValue(e.detail.inputVal);
     } else if (e.detail.id === 1) {
-        panel.changeToValue(e.detail.obj.thumbs[1].value);
+        panel.changeToValue(e.detail.inputVal);
     }
 }
 rangeSliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(this));

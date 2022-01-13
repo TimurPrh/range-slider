@@ -54,22 +54,25 @@ SliderView.prototype.initParams = function initParams(viewModel: [{sliderMin: nu
     this.slider.addEventListener('mousedown', this.onClickBg);
 };
 SliderView.prototype.moveAt = function moveAt(obj: { thumbs: [{ ox: number, value: number }]; track: {begin: number, end: number}; }, id: number) {
-    const numberChangedEvent = new CustomEvent('moveThumbEvent', {
-        detail: {
-            obj,
-            id,
-        },
-    });
-    this.elem.dispatchEvent(numberChangedEvent);
-
     const thumbOx = obj.thumbs[id].ox;
     const thumbValue = obj.thumbs[id].value;
     const trackOx = obj.track;
 
     this.trackModule.change(trackOx.begin, trackOx.end, this.isVertical);
-    const inputVal = this.inputModule.change(thumbValue, id);
-    this.labelsModule.change(id, thumbOx, inputVal, this.isVertical, this.tip);
-    this.thumbsModule.change(id, thumbOx, this.isVertical);
+    let inputVal: number;
+    if (this.isRange || id === 1) {
+        inputVal = this.inputModule.change(thumbValue, id);
+        this.labelsModule.change(id, thumbOx, inputVal, this.isVertical, this.tip);
+        this.thumbsModule.change(id, thumbOx, this.isVertical);
+    }
+
+    const numberChangedEvent = new CustomEvent('moveThumbEvent', {
+        detail: {
+            inputVal,
+            id,
+        },
+    });
+    this.elem.dispatchEvent(numberChangedEvent);
 };
 SliderView.prototype.removeSubViews = function removeSubViews() {
     this.trackModule.remove();
