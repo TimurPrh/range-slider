@@ -18,13 +18,14 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
             if (stepCount > 200) {
                 stepCount = 200;
             }
-            const stepHeight = offsetHeight / (stepCount - 1);
-            let stepValue = viewModel.sliderMax;
+            const stepHeight = offsetHeight / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
+            let stepValue = this.roundValue(viewModel.sliderMin + viewModel.sliderStep * (stepCount - 1));
             for (let i = 0; i < stepCount; i++) {
                 scaleElement.innerHTML += `<li>${stepValue}</li>`;
                 stepValue = this.roundValue(stepValue - viewModel.sliderStep);
             }
             scaleElement.style.gridTemplateRows = `repeat(${stepCount}, ${stepHeight}px)`;
+            scaleElement.style.marginTop = `${((offsetHeight / (stepCount - 1) - stepHeight) * (stepCount - 1))}px`;
             this.elem.parentNode.style.display = 'flex';
             this.elem.parentNode.prepend(scaleElement);
 
@@ -61,13 +62,14 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
             if (stepCount > 200) {
                 stepCount = 200;
             }
-            const stepWidth = offsetWidth / (stepCount - 1);
+            const stepWidth = offsetWidth / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
             let stepValue = viewModel.sliderMin;
             for (let i = 0; i < stepCount; i++) {
                 scaleElement.innerHTML += `<li>${stepValue}</li>`;
                 stepValue = this.roundValue(stepValue + viewModel.sliderStep);
             }
             scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${stepWidth}px)`;
+            scaleElement.style.marginRight = `${((offsetWidth / (stepCount - 1) - stepWidth) * (stepCount - 1))}px`;
             this.elem.parentNode.style.display = 'block';
             this.elem.parentNode.append(scaleElement);
 

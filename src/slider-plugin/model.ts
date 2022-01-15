@@ -158,6 +158,12 @@ SliderModel.prototype.setInitialOutput = function setInitialOutput() {
         if (this.currentValue[1] >= this.initialMax) {
             this.currentValue[1] = this.initialMax;
         }
+
+        if (this.currentValue[0] === this.currentValue[1] && this.currentValue[1] > this.initialMin) {
+            this.currentValue[0] -= this.initialStep;
+        } else if (this.currentValue[0] === this.currentValue[1] && this.currentValue[1] === this.initialMin) {
+            this.currentValue[1] += this.initialStep;
+        }
     }
     if (this.currentValue[0] >= this.initialMax) {
         this.currentValue[0] = this.initialMax - this.initialStep;
@@ -191,7 +197,7 @@ SliderModel.prototype.setInitialOutput = function setInitialOutput() {
     this.calculateTrack();
 };
 SliderModel.prototype.calculateMove = function calculateMove(pos: number, id: number) {
-    const maxSteps = this.roundValue(Math.floor((this.sliderProps[1].sliderMax - this.sliderProps[0].sliderMin) / this.sliderProps[1].sliderStep), this.stepDegree);
+    const maxSteps = Math.floor((this.sliderProps[1].sliderMax - this.sliderProps[0].sliderMin) / this.sliderProps[1].sliderStep);
     const viewStep = ((this.offsetWidth) * this.sliderProps[id].sliderStep) / (this.sliderProps[1].sliderMax - this.sliderProps[0].sliderMin);
     let ox: number;
 
@@ -213,8 +219,6 @@ SliderModel.prototype.calculateMove = function calculateMove(pos: number, id: nu
             this.sliderProps[1].offsetRight = this.minThumbOffset;
         }
 
-        this.sliderProps[1].offsetLeft = this.offsetWidth - viewStep * maxSteps;
-
         this.sliderRange[id] = this.sliderProps[id].sliderMax - this.sliderProps[id].sliderMin;
         if (this.sliderRange[id] === 0) {
             this.currentValue[id] = this.sliderProps[id].sliderMax;
@@ -231,7 +235,14 @@ SliderModel.prototype.calculateMove = function calculateMove(pos: number, id: nu
             this.currentValue[id] = this.sliderProps[id].sliderMin;
         }
     } else {
-        ox = Math.round(pos / viewStep) * viewStep;
+        const x0 = (pos - viewStep / 2) / viewStep;
+        if (x0 < 0) {
+            ox = 0;
+        } else if (x0 > (maxSteps - 1)) {
+            ox = maxSteps * viewStep;
+        } else {
+            ox = Math.ceil(x0) * viewStep;
+        }
 
         this.sliderProps[0].sliderMax = this.outputOx.thumbs[1].value - this.sliderProps[1].sliderStep;
         this.sliderProps[0].offsetRight = this.offsetWidth - this.outputOx.thumbs[1].ox + viewStep + this.minThumbOffset;
@@ -242,8 +253,6 @@ SliderModel.prototype.calculateMove = function calculateMove(pos: number, id: nu
         } else {
             this.sliderProps[1].offsetLeft = this.minThumbOffset;
         }
-
-        this.sliderProps[1].offsetRight = this.offsetWidth - viewStep * maxSteps;
 
         this.sliderRange[id] = this.sliderProps[id].sliderMax - this.sliderProps[id].sliderMin;
         if (this.sliderRange[id] === 0) {
