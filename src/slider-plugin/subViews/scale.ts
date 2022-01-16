@@ -55,6 +55,7 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
                 this.remove();
                 this.render(scale, vertical, viewModelMod, stepDegree, offsetWidth, offsetHeight);
             }
+            this.scaleElement = scaleElement;
         } else {
             const scaleElement = document.createElement('ul');
             scaleElement.classList.add('range-slider__scale');
@@ -100,6 +101,7 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
                 this.remove();
                 this.render(scale, vertical, viewModelMod, stepDegree, offsetWidth, offsetHeight);
             }
+            this.scaleElement = scaleElement;
         }
     }
 };

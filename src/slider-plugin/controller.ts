@@ -122,10 +122,10 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDe
         document.removeEventListener('mousemove', onMouseMove);
     };
 };
-SliderController.prototype.onClickBg = function onClickBg(event: { preventDefault: () => void; target: { classList: { contains: (arg0: string) => any; }; }; pageY: number; pageX: number; }) {
+SliderController.prototype.onClickBg = function onClickBg(event: { preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; }; pageY: number; pageX: number; }) {
     event.preventDefault();
-
-    if (event.target.classList.contains('range-slider__range-bg') || event.target.classList.contains('range-slider__wrapper')) {
+    const { classList, nodeName, parentNode } = event.target;
+    if (classList.contains('range-slider__range-bg') || classList.contains('range-slider__wrapper') || (nodeName === 'LI' && parentNode.classList.contains('range-slider__scale'))) {
         let ox: number;
         if (this.sliderModel.isVertical) {
             ox = event.pageY - this.sliderView.slider.offsetTop;

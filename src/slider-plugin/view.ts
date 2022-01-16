@@ -47,11 +47,11 @@ SliderView.prototype.initParams = function initParams(viewModel: [{sliderMin: nu
 
     this.trackModule.render(bar);
     this.thumbsModule.render(isRange);
-    this.labelsModule.render();
+    this.labelsModule.render(isVertical);
     this.inputModule.render(viewModel);
     this.scaleModule.render(scale, isVertical, viewModel[0], stepDegree, this.offsetWidth, this.offsetHeight);
 
-    this.slider.addEventListener('mousedown', this.onClickBg);
+    this.rangeSlider.addEventListener('mousedown', this.onClickBg);
 };
 SliderView.prototype.moveAt = function moveAt(obj: { thumbs: [{ ox: number, value: number }]; track: {begin: number, end: number}; }, id: number) {
     const thumbOx = obj.thumbs[id].ox;
@@ -62,7 +62,8 @@ SliderView.prototype.moveAt = function moveAt(obj: { thumbs: [{ ox: number, valu
     let inputVal: number;
     if (this.isRange || id === 1) {
         inputVal = this.inputModule.change(thumbValue, id);
-        this.labelsModule.change(id, thumbOx, inputVal, this.isVertical, this.tip);
+        const labelsOffsetLeft = Math.max(this.trackModule.track.offsetWidth / 2, this.thumbsModule.thumbs[1].offsetWidth / 2);
+        this.labelsModule.change(id, thumbOx, labelsOffsetLeft, inputVal, this.isVertical, this.tip);
         this.thumbsModule.change(id, thumbOx, this.isVertical);
     }
 
