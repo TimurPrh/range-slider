@@ -7,15 +7,15 @@ const panelWrapper = document.querySelector('.js-main__panel');
 
 const rangeSlider = new RangeSlider(rangeSliderWrapper, {
     range: true,
-    vertical: true,
+    vertical: false,
     scale: true,
     tip: true,
     bar: true,
     min: 0,
-    max: 11,
-    step: 3,
-    from: 3,
-    to: 9,
+    max: 100,
+    step: 10,
+    from: 20,
+    to: 40,
 });
 const panel = new Panel(panelWrapper, rangeSlider.getSettings());
 
