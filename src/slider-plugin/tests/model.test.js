@@ -1,4 +1,4 @@
-import SliderModel from "./model";
+import SliderModel from "../model";
 
 let model = new SliderModel();
 

@@ -24,7 +24,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\slider-plugin\\model.test.js",
+            "program": "${workspaceFolder}\\src\\slider-plugin\\subViews\\track.test.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]
