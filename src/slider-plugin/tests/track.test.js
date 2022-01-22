@@ -9,7 +9,7 @@ let wrapper;
 let track;
 
 beforeAll(() => {
-    wrapper = document.createElement('input');
+    wrapper = document.createElement('div');
     document.body.appendChild(wrapper);
 });
 

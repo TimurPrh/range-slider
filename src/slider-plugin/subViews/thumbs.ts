@@ -32,7 +32,7 @@ Thumbs.prototype.change = function change(id: number, thumbOx: number, isVertica
     }
 };
 Thumbs.prototype.remove = function remove() {
-    if (this.elem.querySelectorAll('.range-slider__thumb')) {
+    if (this.elem.querySelector('.range-slider__thumb')) {
         this.elem.querySelectorAll('.range-slider__thumb').forEach((item: Element) => item.remove());
     }
 };

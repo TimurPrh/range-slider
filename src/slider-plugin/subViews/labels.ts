@@ -34,7 +34,7 @@ Labels.prototype.change = function change(id: number, thumbOx: number, offsetLef
     this.labels[id].innerHTML = inputVal;
 };
 Labels.prototype.remove = function remove() {
-    if (this.elem.querySelectorAll('.range-slider__result')) {
+    if (this.elem.querySelector('.range-slider__result')) {
         this.elem.querySelectorAll('.range-slider__result').forEach((item: Element) => item.remove());
     }
 };

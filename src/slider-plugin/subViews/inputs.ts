@@ -21,7 +21,7 @@ Inputs.prototype.change = function change(val: number, id: number) {
     return this.inputs[id].value;
 };
 Inputs.prototype.remove = function remove() {
-    if (this.elem.querySelectorAll('.range-slider__input')) {
+    if (this.elem.querySelector('.range-slider__input')) {
         this.elem.querySelectorAll('.range-slider__input').forEach((item: Element) => item.remove());
     }
 };

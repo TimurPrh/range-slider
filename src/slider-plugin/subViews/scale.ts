@@ -8,9 +8,12 @@ interface settings {
 const Scale = function Scale(elem: HTMLElement) {
     this.elem = elem;
 };
-Scale.prototype.render = function render(scale: boolean, vertical: boolean, viewModel: settings, stepDegree: number, offsetWidth: number, offsetHeight: number, oldStep: number) {
+Scale.prototype.render = function render(scale: boolean, vertical: boolean, viewModel: settings, stepDegree: number, offsetWidth: number, offsetHeight: number) {
     if (scale) {
         this.stepDegree = stepDegree;
+        this.vertical = vertical;
+        this.offsetWidth = offsetWidth;
+        this.offsetHeight = offsetHeight;
         if (vertical) {
             const scaleElement = document.createElement('ul');
             scaleElement.classList.add('range-slider__scale', 'range-slider__scale_vertical');
@@ -18,44 +21,21 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
             if (stepCount > 200) {
                 stepCount = 200;
             }
-            const stepHeight = offsetHeight / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
+            this.stepCount = stepCount;
+            this.stepWidth = offsetHeight / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
             let stepValue = this.roundValue(viewModel.sliderMin + viewModel.sliderStep * (stepCount - 1));
             for (let i = 0; i < stepCount; i++) {
                 scaleElement.innerHTML += `<li>${stepValue}</li>`;
                 stepValue = this.roundValue(stepValue - viewModel.sliderStep);
             }
-            scaleElement.style.gridTemplateRows = `repeat(${stepCount}, ${stepHeight}px)`;
-            scaleElement.style.marginTop = `${((offsetHeight / (stepCount - 1) - stepHeight) * (stepCount - 1))}px`;
+            scaleElement.style.gridTemplateRows = `repeat(${stepCount}, ${this.stepWidth}px)`;
+            scaleElement.style.marginTop = `${((offsetHeight / (stepCount - 1) - this.stepWidth) * (stepCount - 1))}px`;
             this.elem.parentNode.style.display = 'flex';
             this.elem.parentNode.prepend(scaleElement);
 
-            let max = 0;
-            scaleElement.childNodes.forEach((node) => {
-                if (node.clientHeight > stepHeight) {
-                    if (node.clientHeight > max) {
-                        max = node.clientHeight;
-                    }
-                }
-            });
-
-            const viewModelMod = viewModel;
-            if (!viewModel.oldStep) {
-                viewModelMod.oldStep = viewModel.sliderStep;
-            }
-            let sliderMax: number;
-            const der = this.isDivisible((viewModel.sliderMax - viewModel.sliderMin), viewModel.oldStep);
-            if (!der) {
-                sliderMax = this.roundValue(viewModel.sliderMin + (stepCount - 1) * viewModel.sliderStep);
-            } else {
-                sliderMax = viewModel.sliderMax;
-            }
-            if (max) {
-                const stepPerm = this.findDer(viewModelMod.oldStep, (sliderMax - viewModel.sliderMin), (sliderMax - viewModel.sliderMin) / Math.trunc((stepHeight * stepCount) / max));
-                viewModelMod.sliderStep = stepPerm;
-                this.remove();
-                this.render(scale, vertical, viewModelMod, stepDegree, offsetWidth, offsetHeight);
-            }
             this.scaleElement = scaleElement;
+
+            this.checkCapacity('clientHeight', viewModel);
         } else {
             const scaleElement = document.createElement('ul');
             scaleElement.classList.add('range-slider__scale');
@@ -63,46 +43,55 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
             if (stepCount > 200) {
                 stepCount = 200;
             }
-            const stepWidth = offsetWidth / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
+            this.stepCount = stepCount;
+            this.stepWidth = offsetWidth / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
             let stepValue = viewModel.sliderMin;
             for (let i = 0; i < stepCount; i++) {
                 scaleElement.innerHTML += `<li>${stepValue}</li>`;
                 stepValue = this.roundValue(stepValue + viewModel.sliderStep);
             }
-            scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${stepWidth}px)`;
-            scaleElement.style.marginRight = `${((offsetWidth / (stepCount - 1) - stepWidth) * (stepCount - 1))}px`;
+            scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${this.stepWidth}px)`;
+            scaleElement.style.marginRight = `${((offsetWidth / (stepCount - 1) - this.stepWidth) * (stepCount - 1))}px`;
             this.elem.parentNode.style.display = 'block';
             this.elem.parentNode.append(scaleElement);
 
-            let max = 0;
-            scaleElement.childNodes.forEach((node) => {
-                if (node.clientWidth > stepWidth) {
-                    if (node.clientWidth > max) {
-                        max = node.clientWidth;
-                    }
-                }
-            });
-
-            const viewModelMod = viewModel;
-            if (!viewModel.oldStep) {
-                viewModelMod.oldStep = viewModel.sliderStep;
-            }
-            let sliderMax: number;
-            const der = this.isDivisible((viewModel.sliderMax - viewModel.sliderMin), viewModel.oldStep);
-            if (!der) {
-                sliderMax = this.roundValue(viewModel.sliderMin + (stepCount - 1) * viewModel.sliderStep);
-            } else {
-                sliderMax = viewModel.sliderMax;
-            }
-
-            if (max) {
-                const stepPerm = this.findDer(viewModelMod.oldStep, (sliderMax - viewModel.sliderMin), (sliderMax - viewModel.sliderMin) / Math.trunc((stepWidth * stepCount) / max));
-                viewModelMod.sliderStep = stepPerm;
-                this.remove();
-                this.render(scale, vertical, viewModelMod, stepDegree, offsetWidth, offsetHeight);
-            }
             this.scaleElement = scaleElement;
+
+            this.checkCapacity('clientWidth', viewModel);
         }
+    }
+};
+Scale.prototype.checkCapacity = function checkCapacity(dim: string, viewModel: settings) {
+    const {
+        stepWidth, stepCount, scaleElement, stepDegree, vertical, offsetWidth, offsetHeight,
+    } = this;
+    let max = 0;
+    scaleElement.childNodes.forEach((node: HTMLElement) => {
+        const nodeSize = node[dim];
+        if (nodeSize > stepWidth) {
+            if (nodeSize > max) {
+                max = nodeSize;
+            }
+        }
+    });
+
+    const viewModelMod = viewModel;
+    if (!viewModel.oldStep) {
+        viewModelMod.oldStep = viewModel.sliderStep;
+    }
+    let sliderMax: number;
+    const der = this.isDivisible((viewModel.sliderMax - viewModel.sliderMin), viewModel.oldStep);
+    if (!der) {
+        sliderMax = this.roundValue(viewModel.sliderMin + (stepCount - 1) * viewModel.sliderStep);
+    } else {
+        sliderMax = viewModel.sliderMax;
+    }
+
+    if (max) {
+        const stepPerm = this.findDer(viewModelMod.oldStep, (sliderMax - viewModel.sliderMin), (sliderMax - viewModel.sliderMin) / Math.trunc((stepWidth * stepCount) / max));
+        viewModelMod.sliderStep = stepPerm;
+        this.remove();
+        this.render(true, vertical, viewModelMod, stepDegree, offsetWidth, offsetHeight);
     }
 };
 Scale.prototype.findDer = function findDer(step: number, max: number, minRes: number) {
