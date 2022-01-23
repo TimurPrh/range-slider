@@ -1,7 +1,7 @@
 const Inputs = function Inputs(elem: Element) {
     this.elem = elem;
 };
-Inputs.prototype.render = function render(viewModel: [{sliderMin: number, sliderMax: number, sliderStep: number}]) {
+Inputs.prototype.render = function render(viewModel: {sliderMin: number, sliderMax: number, sliderStep: number}) {
     for (let i = 0; i < 2; i++) {
         const input = document.createElement('input');
         input.classList.add('range-slider__input');
@@ -10,10 +10,10 @@ Inputs.prototype.render = function render(viewModel: [{sliderMin: number, slider
     }
     this.inputs = this.elem.querySelectorAll('input');
 
-    viewModel.forEach((model: { sliderMin: number; sliderMax: number; sliderStep: number; }, i: number) => {
-        this.inputs[i].min = model.sliderMin;
-        this.inputs[i].max = model.sliderMax;
-        this.inputs[i].step = model.sliderStep;
+    this.inputs.forEach((input: any, i: number) => {
+        this.inputs[i].min = viewModel.sliderMin;
+        this.inputs[i].max = viewModel.sliderMax;
+        this.inputs[i].step = viewModel.sliderStep;
     });
 };
 Inputs.prototype.change = function change(val: number, id: number) {

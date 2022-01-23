@@ -117,22 +117,13 @@ SliderModel.prototype.roundValue = function roundValue(val: number, deg: number)
     return +(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] + exp) : exp}`);
 };
 SliderModel.prototype.initView = function initView(fn: (props: any) => void) {
-    this.sliderProps = [
-        {
-            sliderMin: this.initialMin,
-            sliderMax: this.initialMax,
-            sliderStep: this.initialStep,
-            offsetLeft: this.minThumbOffset,
-            offsetRight: this.minThumbOffset,
-        },
-        {
-            sliderMin: this.initialMin,
-            sliderMax: this.initialMax,
-            sliderStep: this.initialStep,
-            offsetLeft: this.minThumbOffset,
-            offsetRight: this.minThumbOffset,
-        },
-    ];
+    this.sliderProps = {
+        sliderMin: this.initialMin,
+        sliderMax: this.initialMax,
+        sliderStep: this.initialStep,
+        offsetLeft: this.minThumbOffset,
+        offsetRight: this.minThumbOffset,
+    };
     fn(this.sliderProps);
 };
 SliderModel.prototype.setInitialOutput = function setInitialOutput() {

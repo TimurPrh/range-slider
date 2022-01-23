@@ -21,25 +21,20 @@ describe('Subview - Inputs: render', () => {
         inputs.remove();
     });
     test('should render inputs', () => {
-        const viewModel = [{
+        const viewModel = {
             sliderMin: 0,
             sliderMax: 100,
             sliderStep: 10,
-        },
-        {
-            sliderMin: 0,
-            sliderMax: 100,
-            sliderStep: 10,
-        }];
+        };
         inputs.render(viewModel);
         expect(inputs.elem).toContainElement(inputs.elem.querySelector('.range-slider__input'));
         inputs.inputs.forEach((input, i) => {
             expect(input.tagName).toEqual('INPUT');
             expect(input).toHaveClass('range-slider__input');
             expect(input.type).toBe('range');
-            expect(input.min).toBe(`${viewModel[i].sliderMin}`);
-            expect(input.max).toBe(`${viewModel[i].sliderMax}`);
-            expect(input.step).toBe(`${viewModel[i].sliderStep}`);
+            expect(input.min).toBe(`${viewModel.sliderMin}`);
+            expect(input.max).toBe(`${viewModel.sliderMax}`);
+            expect(input.step).toBe(`${viewModel.sliderStep}`);
         });
     });
 });
@@ -47,16 +42,11 @@ describe('Subview - Inputs: render', () => {
 describe('Subview - Inputs: change', () => {
     beforeEach(() => {
         inputs = new Inputs(wrapper);
-        const viewModel = [{
+        const viewModel = {
             sliderMin: 0,
             sliderMax: 100,
             sliderStep: 10,
-        },
-        {
-            sliderMin: 0,
-            sliderMax: 100,
-            sliderStep: 10,
-        }];
+        };
         inputs.render(viewModel);
     });
     afterEach(() => {
@@ -81,16 +71,11 @@ describe('Subview - Inputs: remove', () => {
         expect(inputs.inputs).toBeFalsy();
     });
     test('should remove inputs', () => {
-        const viewModel = [{
+        const viewModel = {
             sliderMin: 0,
             sliderMax: 100,
             sliderStep: 10,
-        },
-        {
-            sliderMin: 0,
-            sliderMax: 100,
-            sliderStep: 10,
-        }];
+        };
         inputs.render(viewModel);
 
         inputs.remove();

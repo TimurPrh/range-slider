@@ -34,31 +34,18 @@ SliderController.prototype.getSettings = function getSettings() {
         to: this.sliderView.inputModule.inputs[1].value,
     };
 };
-SliderController.prototype.initView = function initView(props: [
-    {
+SliderController.prototype.initView = function initView(props:{
         sliderMin: number,
         sliderMax: number,
         sliderStep: number,
         offsetLeft: number,
         offsetRight: number,
-    },
-    {
-        sliderMin: number,
-        sliderMax: number,
-        sliderStep: number,
-        offsetLeft: number,
-        offsetRight: number,
-    }]) {
+    }) {
     this.sliderView.initParams([
         {
-            sliderMin: props[0].sliderMin,
-            sliderMax: props[0].sliderMax,
-            sliderStep: props[0].sliderStep,
-        },
-        {
-            sliderMin: props[1].sliderMin,
-            sliderMax: props[1].sliderMax,
-            sliderStep: props[1].sliderStep,
+            sliderMin: props.sliderMin,
+            sliderMax: props.sliderMax,
+            sliderStep: props.sliderStep,
         },
     ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip, this.sliderModel.viewBar, this.sliderModel.stepDegree);
 };

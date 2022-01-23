@@ -12,7 +12,7 @@ const SliderView = function SliderView(elem: Element) {
     this.thumbsModule = new Thumbs(this.slider);
     this.labelsModule = new Labels(this.slider);
     this.scaleModule = new Scale(this.slider);
-    this.inputModule = new Inputs(this.slider);
+    this.inputsModule = new Inputs(this.slider);
 
     this.onClickBg = null;
 };
@@ -27,7 +27,7 @@ SliderView.prototype.render = function render() {
     this.rangeSlider = this.elem.querySelector('.range-slider');
     this.slider = this.rangeSlider.querySelector('.range-slider__wrapper');
 };
-SliderView.prototype.initParams = function initParams(viewModel: [{sliderMin: number, sliderMax: number, sliderStep: number}], isVertical: boolean, isRange: boolean, scale: boolean, tip: boolean, bar: boolean, stepDegree: number) {
+SliderView.prototype.initParams = function initParams(viewModel: {sliderMin: number, sliderMax: number, sliderStep: number}, isVertical: boolean, isRange: boolean, scale: boolean, tip: boolean, bar: boolean, stepDegree: number) {
     this.isVertical = isVertical;
     this.isRange = isRange;
     this.scale = scale;
@@ -48,8 +48,8 @@ SliderView.prototype.initParams = function initParams(viewModel: [{sliderMin: nu
     this.trackModule.render(bar);
     this.thumbsModule.render(isRange);
     this.labelsModule.render(isVertical);
-    this.inputModule.render(viewModel);
-    this.scaleModule.render(scale, isVertical, viewModel[0], stepDegree, this.offsetWidth, this.offsetHeight);
+    this.inputsModule.render(viewModel);
+    this.scaleModule.render(scale, isVertical, viewModel, stepDegree, this.offsetWidth, this.offsetHeight);
 
     this.rangeSlider.addEventListener('mousedown', this.onClickBg);
 };
@@ -61,7 +61,7 @@ SliderView.prototype.moveAt = function moveAt(obj: { thumbs: [{ ox: number, valu
     this.trackModule.change(trackOx.begin, trackOx.end, this.isVertical);
     let inputVal: number;
     if (this.isRange || id === 1) {
-        inputVal = this.inputModule.change(thumbValue, id);
+        inputVal = this.inputsModule.change(thumbValue, id);
         const labelsOffsetLeft = Math.max(this.trackModule.track.offsetWidth / 2, this.thumbsModule.thumbs[1].offsetWidth / 2);
         this.labelsModule.change(id, thumbOx, labelsOffsetLeft, inputVal, this.isVertical, this.tip);
         this.thumbsModule.change(id, thumbOx, this.isVertical);
@@ -80,7 +80,7 @@ SliderView.prototype.removeSubViews = function removeSubViews() {
     this.thumbsModule.remove();
     this.labelsModule.remove();
     this.scaleModule.remove();
-    this.inputModule.remove();
+    this.inputsModule.remove();
 };
 
 export default SliderView;
