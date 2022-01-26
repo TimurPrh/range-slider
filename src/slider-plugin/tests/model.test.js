@@ -588,13 +588,20 @@ describe('Model: initView', () => {
         model.initView(mockCallback);
 
         expect(mockCallback.mock.calls.length).toBe(1);
-        expect(model.sliderProps).toEqual({
+        expect(model.sliderProps).toEqual([{
             sliderMin: 10,
             sliderMax: 100,
             sliderStep: 10,
             offsetLeft: 0,
             offsetRight: 0,
-        });
+        },
+        {
+            sliderMin: 10,
+            sliderMax: 100,
+            sliderStep: 10,
+            offsetLeft: 0,
+            offsetRight: 0,
+        }]);
     });
 });
 

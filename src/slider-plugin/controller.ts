@@ -1,6 +1,9 @@
-const SliderController = function SliderController(sliderView: any, sliderModel: any) {
-    this.sliderView = sliderView;
-    this.sliderModel = sliderModel;
+import SliderView from "./view";
+import SliderModel from "./model";
+
+const SliderController = function SliderController(elem: Element) {
+    this.sliderView = new SliderView(elem);
+    this.sliderModel = new SliderModel();
 };
 SliderController.prototype.initialize = function initialize(settings: {
     range: boolean,
@@ -30,24 +33,28 @@ SliderController.prototype.getSettings = function getSettings() {
         min: this.sliderModel.initialMin,
         max: this.sliderModel.initialMax,
         step: this.sliderModel.initialStep,
-        from: this.sliderView.inputModule.inputs[0].value,
-        to: this.sliderView.inputModule.inputs[1].value,
+        from: this.sliderView.inputsModule.inputs[0].value,
+        to: this.sliderView.inputsModule.inputs[1].value,
     };
 };
 SliderController.prototype.initView = function initView(props:{
         sliderMin: number,
         sliderMax: number,
         sliderStep: number,
-        offsetLeft: number,
-        offsetRight: number,
     }) {
-    this.sliderView.initParams([
+    this.sliderView.initParams(
         {
             sliderMin: props.sliderMin,
             sliderMax: props.sliderMax,
             sliderStep: props.sliderStep,
         },
-    ], this.sliderModel.isVertical, this.sliderModel.isRange, this.sliderModel.viewScale, this.sliderModel.viewTip, this.sliderModel.viewBar, this.sliderModel.stepDegree);
+        this.sliderModel.isVertical,
+        this.sliderModel.isRange,
+        this.sliderModel.viewScale,
+        this.sliderModel.viewTip,
+        this.sliderModel.viewBar,
+        this.sliderModel.stepDegree,
+    );
 };
 SliderController.prototype.setInitialState = function setInitialState() {
     this.sliderModel.initView(this.initView.bind(this));
@@ -105,9 +112,9 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDe
         moveForListener(e);
     };
     document.addEventListener('mousemove', onMouseMove);
-    document.onmouseup = () => {
+    document.addEventListener('mouseup', () => {
         document.removeEventListener('mousemove', onMouseMove);
-    };
+    }, { once: true });
 };
 SliderController.prototype.onClickBg = function onClickBg(event: { preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; }; pageY: number; pageX: number; }) {
     event.preventDefault();

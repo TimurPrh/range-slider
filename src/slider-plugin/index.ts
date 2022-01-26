@@ -1,5 +1,3 @@
-import SliderView from './view';
-import SliderModel from './model';
 import SliderController from './controller';
 
 import './style.scss';
@@ -18,9 +16,7 @@ interface sliderSettings {
 }
 
 const RangeSlider = function RangeSlider(elem: Element, settings: sliderSettings) {
-    this.sliderView = new SliderView(elem);
-    this.sliderModel = new SliderModel();
-    this.sliderController = new SliderController(this.sliderView, this.sliderModel);
+    this.sliderController = new SliderController(elem);
     this.sliderController.initialize(settings);
 };
 RangeSlider.prototype.getSettings = function getSettings() {
