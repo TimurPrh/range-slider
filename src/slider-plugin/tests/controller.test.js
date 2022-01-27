@@ -3,6 +3,8 @@
 */
 
 import '@testing-library/jest-dom';
+// eslint-disable-next-line no-unused-vars
+import ResizeObserver from './__mocks__/ResizeObserver';
 import SliderController from '../controller';
 import SliderView from '../view';
 import SliderModel from '../model';
@@ -22,8 +24,7 @@ describe('Controller: initialize', () => {
 
     test('should initialize slider', () => {
         Object.defineProperty(controller.sliderView, 'thumbsModule', { value: { onMoveThumb: null } });
-        Object.defineProperty(controller.sliderView, 'offsetHeight', { value: 100 });
-        Object.defineProperty(controller.sliderView, 'offsetWidth', { value: 200 });
+        controller.sliderView.getSliderWidth = jest.fn(() => 200);
 
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
         Object.defineProperty(controller.sliderModel, 'isRange', { value: false });
@@ -56,8 +57,7 @@ describe('Controller: initialize', () => {
     });
     test('should initialize slider with options isVertical and isRange - true', () => {
         Object.defineProperty(controller.sliderView, 'thumbsModule', { value: { onMoveThumb: null } });
-        Object.defineProperty(controller.sliderView, 'offsetHeight', { value: 100 });
-        Object.defineProperty(controller.sliderView, 'offsetWidth', { value: 200 });
+        controller.sliderView.getSliderWidth = jest.fn(() => 200);
 
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
         Object.defineProperty(controller.sliderModel, 'isRange', { value: true });
@@ -68,7 +68,7 @@ describe('Controller: initialize', () => {
         expect(SliderView).toHaveBeenCalledTimes(1);
         expect(SliderModel).toHaveBeenCalledTimes(1);
 
-        expect(controller.sliderModel.offsetWidth).toEqual(100);
+        expect(controller.sliderModel.offsetWidth).toEqual(200);
 
         // mock model
         const mockModelInstance = SliderModel.mock.instances[0];
@@ -102,8 +102,7 @@ describe('Controller: reInitialize', () => {
 
     test('should reinitialize slider', () => {
         Object.defineProperty(controller.sliderView, 'thumbsModule', { value: { onMoveThumb: null } });
-        Object.defineProperty(controller.sliderView, 'offsetHeight', { value: 100 });
-        Object.defineProperty(controller.sliderView, 'offsetWidth', { value: 200 });
+        controller.sliderView.getSliderWidth = jest.fn(() => 200);
 
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
         Object.defineProperty(controller.sliderModel, 'isRange', { value: false });

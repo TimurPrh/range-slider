@@ -19,14 +19,14 @@ Labels.prototype.change = function change(id: number, thumbOx: number, offsetLef
     if (vertical) {
         if (tip) {
             this.labels[id].style.display = 'block';
-            this.labels[id].style.top = `${thumbOx}px`;
+            this.labels[id].style.top = `${thumbOx}%`;
             this.labels[id].style.marginLeft = `${offsetLeft + 5}px`;
         } else {
             this.labels[id].style.display = 'none';
         }
     } else if (tip) {
         this.labels[id].style.display = 'block';
-        this.labels[id].style.left = `${thumbOx}px`;
+        this.labels[id].style.left = `${thumbOx}%`;
     } else {
         this.labels[id].style.display = 'none';
     }

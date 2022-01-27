@@ -26,9 +26,9 @@ Thumbs.prototype.render = function render(isRange: boolean) {
 };
 Thumbs.prototype.change = function change(id: number, thumbOx: number, isVertical: boolean) {
     if (isVertical) {
-        this.thumbs[id].style.top = `${thumbOx}px`;
+        this.thumbs[id].style.top = `${thumbOx}%`;
     } else {
-        this.thumbs[id].style.left = `${thumbOx}px`;
+        this.thumbs[id].style.left = `${thumbOx}%`;
     }
 };
 Thumbs.prototype.remove = function remove() {

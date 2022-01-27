@@ -51,16 +51,16 @@ describe('Subview - Thumbs: change', () => {
         thumbs.change(0, 50, false);
         thumbs.change(1, 70, false);
 
-        expect(thumbs.thumbs[0].style.left).toEqual('50px');
-        expect(thumbs.thumbs[1].style.left).toEqual('70px');
+        expect(thumbs.thumbs[0].style.left).toEqual('50%');
+        expect(thumbs.thumbs[1].style.left).toEqual('70%');
     });
     test('should change style properties with vertical option', () => {
         thumbs.render(true);
         thumbs.change(0, 50, true);
         thumbs.change(1, 70, true);
 
-        expect(thumbs.thumbs[0].style.top).toEqual('50px');
-        expect(thumbs.thumbs[1].style.top).toEqual('70px');
+        expect(thumbs.thumbs[0].style.top).toEqual('50%');
+        expect(thumbs.thumbs[1].style.top).toEqual('70%');
     });
 });
 

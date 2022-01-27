@@ -59,11 +59,7 @@ SliderController.prototype.initView = function initView(props:{
 SliderController.prototype.setInitialState = function setInitialState() {
     this.sliderModel.initView(this.initView.bind(this));
 
-    if (this.sliderModel.isVertical) {
-        this.sliderModel.offsetWidth = this.sliderView.offsetHeight;
-    } else {
-        this.sliderModel.offsetWidth = this.sliderView.offsetWidth;
-    }
+    this.setModelWidth();
 
     this.sliderModel.setInitialOutput();
 
@@ -71,6 +67,11 @@ SliderController.prototype.setInitialState = function setInitialState() {
     if (this.sliderModel.isRange) {
         this.sliderView.moveAt(this.sliderModel.outputOx, 0);
     }
+
+    new ResizeObserver(() => this.setModelWidth()).observe(this.sliderView.rangeSlider);
+};
+SliderController.prototype.setModelWidth = function setModelWidth() {
+    this.sliderModel.offsetWidth = this.sliderView.getSliderWidth();
 };
 SliderController.prototype.reInitialize = function reInitialize(settings) {
     this.sliderModel.setSettings(settings);

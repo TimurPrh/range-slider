@@ -75,6 +75,12 @@ SliderView.prototype.moveAt = function moveAt(obj: { thumbs: [{ ox: number, valu
     });
     this.elem.dispatchEvent(numberChangedEvent);
 };
+SliderView.prototype.getSliderWidth = function getSliderWidth() {
+    if (this.isVertical) {
+        return this.slider.offsetHeight;
+    }
+    return this.slider.offsetWidth;
+};
 SliderView.prototype.removeSubViews = function removeSubViews() {
     this.trackModule.remove();
     this.thumbsModule.remove();

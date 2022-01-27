@@ -18,6 +18,7 @@ describe('Model: calculateIndex', () => {
             track: {},
         };
         model.isRange = false;
+        model.offsetWidth = 100;
     });
     afterAll(() => {
         model = new SliderModel();
@@ -760,12 +761,12 @@ describe('Model: calculateMove', () => {
                     value: 0,
                 },
                 {
-                    ox: 5.263157894736835,
+                    ox: 5.2631578947368345,
                     value: 90,
                 },
             ],
             track: {
-                begin: 5.263157894736835,
+                begin: 5.2631578947368345,
                 end: 100,
             },
         });

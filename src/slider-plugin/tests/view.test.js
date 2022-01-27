@@ -251,3 +251,32 @@ describe('View: moveAt', () => {
         expect(mockThumbsChange).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('View: getSliderWidth', () => {
+    beforeEach(() => {
+        Inputs.mockClear();
+        Labels.mockClear();
+        Scale.mockClear();
+        Thumbs.mockClear();
+        Track.mockClear();
+
+        view = new SliderView(wrapper);
+    });
+    afterEach(() => {
+        view.removeSubViews();
+    });
+    test('should return actual size of the slider', () => {
+        const offset = 100;
+        view.isVertical = false;
+        Object.defineProperty(view.slider, 'offsetWidth', { value: offset });
+
+        expect(view.getSliderWidth()).toEqual(offset);
+    });
+    test('should return actual size of the slider', () => {
+        const offset = 100;
+        view.isVertical = true;
+        Object.defineProperty(view.slider, 'offsetHeight', { value: offset });
+
+        expect(view.getSliderWidth()).toEqual(offset);
+    });
+});

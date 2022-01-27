@@ -16,11 +16,11 @@ Track.prototype.render = function render(bar: boolean) {
 };
 Track.prototype.change = function change(begin: number, end: number, vertical: boolean) {
     if (vertical) {
-        this.track.style.marginTop = `${begin}px`;
-        this.track.style.height = `${end - begin}px`;
+        this.track.style.top = `${begin}%`;
+        this.track.style.height = `${end - begin}%`;
     } else {
-        this.track.style.marginLeft = `${begin}px`;
-        this.track.style.width = `${end - begin}px`;
+        this.track.style.left = `${begin}%`;
+        this.track.style.width = `${end - begin}%`;
     }
 };
 Track.prototype.remove = function remove() {

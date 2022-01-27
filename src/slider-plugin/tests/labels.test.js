@@ -62,7 +62,7 @@ describe('Subview - Labels: change', () => {
         labels.change(...Object.values(opts));
 
         expect(labels.labels[opts.id]).toBeVisible();
-        expect(labels.labels[opts.id].style.left).toEqual(`${opts.thumbOx}px`);
+        expect(labels.labels[opts.id].style.left).toEqual(`${opts.thumbOx}%`);
         expect(labels.labels[opts.id].innerHTML).toEqual(`${opts.inputVal}`);
     });
     test('should change style properties', () => {
@@ -78,7 +78,7 @@ describe('Subview - Labels: change', () => {
         labels.change(...Object.values(opts));
 
         expect(labels.labels[opts.id]).toBeVisible();
-        expect(labels.labels[opts.id].style.top).toEqual(`${opts.thumbOx}px`);
+        expect(labels.labels[opts.id].style.top).toEqual(`${opts.thumbOx}%`);
         expect(labels.labels[opts.id].style.marginLeft).toEqual(`${opts.offsetLeft + 5}px`);
         expect(labels.labels[opts.id].innerHTML).toEqual(`${opts.inputVal}`);
     });

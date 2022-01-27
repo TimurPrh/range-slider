@@ -45,15 +45,15 @@ describe('Subview - Track: change', () => {
         track.render(true);
         track.change(10, 20, false);
 
-        expect(track.track.style.marginLeft).toEqual('10px');
-        expect(track.track.style.width).toEqual('10px');
+        expect(track.track.style.left).toEqual('10%');
+        expect(track.track.style.width).toEqual('10%');
     });
     test('should change style properties', () => {
         track.render(true);
         track.change(10, 20, true);
 
-        expect(track.track.style.marginTop).toEqual('10px');
-        expect(track.track.style.height).toEqual('10px');
+        expect(track.track.style.top).toEqual('10%');
+        expect(track.track.style.height).toEqual('10%');
     });
 });
 
