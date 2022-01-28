@@ -19,9 +19,13 @@ Thumbs.prototype.render = function render(isRange: boolean) {
     }
 
     if (isRange) {
-        this.thumbs.forEach((thumb: HTMLElement) => thumb.addEventListener('mousedown', this.onMoveThumb));
+        this.thumbs.forEach((thumb: HTMLElement) => {
+            thumb.addEventListener('mousedown', this.onMoveThumb);
+            thumb.addEventListener('touchstart', this.onMoveThumb);
+        });
     } else {
         this.thumbs[1].addEventListener('mousedown', this.onMoveThumb);
+        this.thumbs[1].addEventListener('touchstart', this.onMoveThumb);
     }
 };
 Thumbs.prototype.change = function change(id: number, thumbOx: number, isVertical: boolean) {

@@ -281,6 +281,7 @@ describe('Controller: onClickBg', () => {
             },
             pageY: 100,
             pageX: 150,
+            cancelable: true,
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
@@ -330,6 +331,7 @@ describe('Controller: onClickBg', () => {
             },
             pageY: 100,
             pageX: 150,
+            cancelable: true,
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
@@ -373,6 +375,7 @@ describe('Controller: onClickBg', () => {
             },
             pageY: 100,
             pageX: 150,
+            cancelable: true,
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
@@ -411,6 +414,7 @@ describe('Controller: onClickBg', () => {
             },
             pageY: 100,
             pageX: 150,
+            cancelable: true,
         };
         controller.sliderModel.isVertical = true;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
@@ -429,6 +433,98 @@ describe('Controller: onClickBg', () => {
 
         expect(mockModelCalculateIndex.mock.calls[0][0]).toEqual(70);
         expect(mockModelCalculateMove.mock.calls[0][0]).toEqual(70);
+        expect(mockModelCalculateMove.mock.calls[0][1]).toEqual(123);
+        expect(mockModelCalculateIndex).toHaveBeenCalledTimes(1);
+        expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
+
+        // mock view
+        const mockViewlInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewlInstance.moveAt;
+        expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
+        expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
+        expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
+    });
+    test('should set value on slider with touch event', () => {
+        const event = {
+            preventDefault: () => {},
+            target: {
+                classList: {
+                    contains() {
+                        return true;
+                    },
+                },
+                nodeName: 'node-name',
+                parentNode: 'parent-node',
+            },
+            touches: [{
+                pageY: 100,
+                pageX: 150,
+            }],
+            cancelable: true,
+        };
+        controller.sliderModel.isVertical = false;
+        Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
+        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        jest.spyOn(event, 'preventDefault');
+        controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
+
+        controller.onClickBg(event);
+
+        expect(event.preventDefault).toBeCalled();
+
+        // mock model
+        const mockModelInstance = SliderModel.mock.instances[0];
+        const mockModelCalculateIndex = mockModelInstance.calculateIndex;
+        const mockModelCalculateMove = mockModelInstance.calculateMove;
+
+        expect(mockModelCalculateIndex.mock.calls[0][0]).toEqual(130);
+        expect(mockModelCalculateMove.mock.calls[0][0]).toEqual(130);
+        expect(mockModelCalculateMove.mock.calls[0][1]).toEqual(123);
+        expect(mockModelCalculateIndex).toHaveBeenCalledTimes(1);
+        expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
+
+        // mock view
+        const mockViewlInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewlInstance.moveAt;
+        expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
+        expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
+        expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
+    });
+    test('should set value on slider with touch event and not cancelable event', () => {
+        const event = {
+            preventDefault: () => {},
+            target: {
+                classList: {
+                    contains() {
+                        return true;
+                    },
+                },
+                nodeName: 'node-name',
+                parentNode: 'parent-node',
+            },
+            touches: [{
+                pageY: 100,
+                pageX: 150,
+            }],
+            cancelable: false,
+        };
+        controller.sliderModel.isVertical = false;
+        Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
+        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        jest.spyOn(event, 'preventDefault');
+        controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
+
+        controller.onClickBg(event);
+
+        expect(event.preventDefault).not.toBeCalled();
+
+        // mock model
+        const mockModelInstance = SliderModel.mock.instances[0];
+        const mockModelCalculateIndex = mockModelInstance.calculateIndex;
+        const mockModelCalculateMove = mockModelInstance.calculateMove;
+
+        expect(mockModelCalculateIndex.mock.calls[0][0]).toEqual(130);
+        expect(mockModelCalculateMove.mock.calls[0][0]).toEqual(130);
         expect(mockModelCalculateMove.mock.calls[0][1]).toEqual(123);
         expect(mockModelCalculateIndex).toHaveBeenCalledTimes(1);
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
@@ -483,14 +579,14 @@ describe('Controller: onMoveThumb', () => {
 
         expect(mockModelCalculateMove.mock.calls[0][0]).toEqual(130);
         expect(mockModelCalculateMove.mock.calls[0][1]).toEqual(1);
-        expect(mockModelCalculateMove).toHaveBeenCalledTimes(2);
+        expect(mockModelCalculateMove).toHaveBeenCalledTimes(3);
 
         // mock view
         const mockViewlInstance = SliderView.mock.instances[0];
         const mockViewMoveAt = mockViewlInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
-        expect(mockViewMoveAt).toHaveBeenCalledTimes(2);
+        expect(mockViewMoveAt).toHaveBeenCalledTimes(3);
     });
     test('should set value on slider when thumb is moving and should not change e.target', () => {
         const event = {
@@ -531,14 +627,14 @@ describe('Controller: onMoveThumb', () => {
 
         expect(mockModelCalculateMove.mock.calls[0][0]).toEqual(130);
         expect(mockModelCalculateMove.mock.calls[0][1]).toEqual(1);
-        expect(mockModelCalculateMove).toHaveBeenCalledTimes(2);
+        expect(mockModelCalculateMove).toHaveBeenCalledTimes(3);
 
         // mock view
         const mockViewlInstance = SliderView.mock.instances[0];
         const mockViewMoveAt = mockViewlInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
-        expect(mockViewMoveAt).toHaveBeenCalledTimes(2);
+        expect(mockViewMoveAt).toHaveBeenCalledTimes(3);
     });
     test('should set value on slider when thumb is moving with vertical option', () => {
         const event = {
@@ -574,13 +670,58 @@ describe('Controller: onMoveThumb', () => {
 
         expect(mockModelCalculateMove.mock.calls[0][0]).toEqual(70);
         expect(mockModelCalculateMove.mock.calls[0][1]).toEqual(1);
-        expect(mockModelCalculateMove).toHaveBeenCalledTimes(2);
+        expect(mockModelCalculateMove).toHaveBeenCalledTimes(3);
 
         // mock view
         const mockViewlInstance = SliderView.mock.instances[0];
         const mockViewMoveAt = mockViewlInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
-        expect(mockViewMoveAt).toHaveBeenCalledTimes(2);
+        expect(mockViewMoveAt).toHaveBeenCalledTimes(3);
+    });
+    test('should set value on slider when thumb is moving by touch', () => {
+        const event = {
+            preventDefault: () => {},
+            target: {
+                classList: {
+                    contains() {
+                        return true;
+                    },
+                },
+                dataset: {
+                    id: '1',
+                },
+            },
+            touches: [{
+                pageY: 100,
+                pageX: 150,
+            }],
+        };
+        controller.sliderModel.isVertical = false;
+        document.addEventListener = jest.fn((eventName, callback) => {
+            callback(event);
+        });
+        Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
+        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        jest.spyOn(event, 'preventDefault');
+
+        controller.onMoveThumb(event);
+
+        expect(event.preventDefault).toBeCalled();
+
+        // mock model
+        const mockModelInstance = SliderModel.mock.instances[0];
+        const mockModelCalculateMove = mockModelInstance.calculateMove;
+
+        expect(mockModelCalculateMove.mock.calls[0][0]).toEqual(130);
+        expect(mockModelCalculateMove.mock.calls[0][1]).toEqual(1);
+        expect(mockModelCalculateMove).toHaveBeenCalledTimes(3);
+
+        // mock view
+        const mockViewlInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewlInstance.moveAt;
+        expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
+        expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
+        expect(mockViewMoveAt).toHaveBeenCalledTimes(3);
     });
 });

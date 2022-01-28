@@ -92,17 +92,26 @@ SliderController.prototype.setFromValue = function setFromValue(val: number) {
 SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDefault: () => void; }) {
     event.preventDefault();
 
-    const moveForListener = (e: { preventDefault?: () => void; target?: any; pageY?: any; pageX?: any; }) => {
+    const moveForListener = (e: { preventDefault?: (() => void) | (() => void); target?: any; pageY?: any; pageX?: any; touches?: any; }) => {
         if (e.target.classList.contains('range-slider__thumb')) {
             this.currentThumb = e.target;
         }
 
         const currentThumbId: number = parseInt(this.currentThumb.dataset.id, 10);
+        let pageX: number;
+        let pageY: number;
+        if (e.touches) {
+            pageX = e.touches[0].pageX;
+            pageY = e.touches[0].pageY;
+        } else {
+            pageX = e.pageX;
+            pageY = e.pageY;
+        }
 
         if (this.sliderModel.isVertical) {
-            this.sliderModel.calculateMove(e.pageY - this.sliderView.slider.offsetTop, currentThumbId);
+            this.sliderModel.calculateMove(pageY - this.sliderView.slider.offsetTop, currentThumbId);
         } else {
-            this.sliderModel.calculateMove(e.pageX - this.sliderView.slider.offsetLeft, currentThumbId);
+            this.sliderModel.calculateMove(pageX - this.sliderView.slider.offsetLeft, currentThumbId);
         }
 
         this.sliderView.moveAt(this.sliderModel.outputOx, currentThumbId);
@@ -116,16 +125,33 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDe
     document.addEventListener('mouseup', () => {
         document.removeEventListener('mousemove', onMouseMove);
     }, { once: true });
+
+    document.addEventListener('touchmove', onMouseMove);
+    document.addEventListener('touchend', () => {
+        document.removeEventListener('touchmove', onMouseMove);
+        document.removeEventListener('mousemove', onMouseMove);
+    }, { once: true });
 };
-SliderController.prototype.onClickBg = function onClickBg(event: { preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; }; pageY: number; pageX: number; }) {
-    event.preventDefault();
+SliderController.prototype.onClickBg = function onClickBg(event: { cancelable: any; preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; }; touches: { pageX: number; pageY: number; }[]; pageX: number; pageY: number; }) {
+    if (event.cancelable) {
+        event.preventDefault();
+    }
     const { classList, nodeName, parentNode } = event.target;
     if (classList.contains('range-slider__range-bg') || classList.contains('range-slider__wrapper') || (nodeName === 'LI' && parentNode.classList.contains('range-slider__scale'))) {
         let ox: number;
-        if (this.sliderModel.isVertical) {
-            ox = event.pageY - this.sliderView.slider.offsetTop;
+        let pageX: number;
+        let pageY: number;
+        if (event.touches) {
+            pageX = event.touches[0].pageX;
+            pageY = event.touches[0].pageY;
         } else {
-            ox = event.pageX - this.sliderView.slider.offsetLeft;
+            pageX = event.pageX;
+            pageY = event.pageY;
+        }
+        if (this.sliderModel.isVertical) {
+            ox = pageY - this.sliderView.slider.offsetTop;
+        } else {
+            ox = pageX - this.sliderView.slider.offsetLeft;
         }
         const i = this.sliderModel.calculateIndex(ox);
         this.sliderModel.calculateMove(ox, i);

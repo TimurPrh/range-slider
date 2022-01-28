@@ -52,6 +52,7 @@ SliderView.prototype.initParams = function initParams(viewModel: {sliderMin: num
     this.scaleModule.render(scale, isVertical, viewModel, stepDegree, this.offsetWidth, this.offsetHeight);
 
     this.rangeSlider.addEventListener('mousedown', this.onClickBg);
+    this.rangeSlider.addEventListener('touchstart', this.onClickBg);
 };
 SliderView.prototype.moveAt = function moveAt(obj: { thumbs: [{ ox: number, value: number }]; track: {begin: number, end: number}; }, id: number) {
     const thumbOx = obj.thumbs[id].ox;
