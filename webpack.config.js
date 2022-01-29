@@ -1,6 +1,6 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
@@ -12,63 +12,61 @@ console.log('is DEV: ', isDev);
 
 const optimization = () => {
     const config = {
-        splitChunks: {
-            chunks: 'all'
-        },
-        runtimeChunk: 'single'
-    }
+        runtimeChunk: 'single',
+    };
 
     if (isProd) {
         config.minimizer = [
             new OptimizeCssAssetsWebpackPlugin(),
-            new TerserWebpackPlugin()
-        ]
+            new TerserWebpackPlugin(),
+        ];
     }
 
-    return config
-}
+    return config;
+};
 
-const filename = ext => {
+const filename = (ext) => {
     let name;
-    if (ext == 'html') {
+    if (ext === 'html') {
         name = isDev ? `[name]/index.${ext}` : `[name]/index.[hash].${ext}`;
     } else {
         name = isDev ? `[name]/[name].${ext}` : `[name]/[name].[hash].${ext}`;
     }
-    return name
-}
+    return name;
+};
 
-const cssLoaders = extra => {
+const cssLoaders = (extra) => {
     const loaders = [
         {
             loader: MiniCssExtractPlugin.loader,
-        }, 
-        "css-loader"
+        },
+        "css-loader",
     ];
     if (extra) {
         loaders.push(extra);
     }
-    return loaders
-}
+    return loaders;
+};
 
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     mode: 'development',
     entry: {
-        'main': ['@babel/polyfill', './index.ts'],
+        main: ['@babel/polyfill', './index.ts'],
+        plugin: ['@babel/polyfill', './slider-plugin/index.ts'],
     },
     output: {
         filename: filename('js'),
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
     },
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.js'],
     },
     optimization: optimization(),
     devServer: {
-        port: 4200
+        port: 4200,
     },
-    devtool: isDev ? 'source-map' : '',
+    devtool: isProd ? false : 'source-map',
     plugins: [
         new HTMLWebpackPlugin({
             inject: true,
@@ -76,8 +74,8 @@ module.exports = {
             template: './index.pug',
             filename: 'index.html',
             minify: {
-                collapseWhitespace: isProd
-            }
+                collapseWhitespace: isProd,
+            },
         }),
         new CleanWebpackPlugin(),
         // new CopyWebpackPlugin({
@@ -89,8 +87,8 @@ module.exports = {
         //     ]
         // }),
         new MiniCssExtractPlugin({
-            filename: filename('css')
-        })
+            filename: filename('css'),
+        }),
     ],
     module: {
         rules: [
@@ -103,11 +101,11 @@ module.exports = {
                 type: 'asset/resource',
             },
             {
-                test:  /\.xml$/,
+                test: /\.xml$/,
                 use: ['xml-loader'],
             },
             {
-                test:  /\.csv$/,
+                test: /\.csv$/,
                 use: ['csv-loader'],
             },
             {
@@ -116,11 +114,11 @@ module.exports = {
             },
             {
                 test: /\.less$/i,
-                use: cssLoaders('less-loader')
+                use: cssLoaders('less-loader'),
             },
             {
                 test: /\.s[ac]ss$/i,
-                use: cssLoaders('sass-loader')
+                use: cssLoaders('sass-loader'),
             },
             {
                 test: /\.m?ts$/,
@@ -128,9 +126,9 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env', '@babel/preset-typescript']
-                    }
-                }
+                        presets: ['@babel/preset-env', '@babel/preset-typescript'],
+                    },
+                },
             },
             {
                 test: /\.m?js$/,
@@ -138,17 +136,17 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env']
-                    }
-                }
+                        presets: ['@babel/preset-env'],
+                    },
+                },
             },
             {
                 test: /\.(pug|jade)$/,
                 loader: 'pug-loader',
                 options: {
                     pretty: true,
-                }
-            }
-        ]
-    }
-}
+                },
+            },
+        ],
+    },
+};

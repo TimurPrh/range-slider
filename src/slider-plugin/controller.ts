@@ -92,7 +92,7 @@ SliderController.prototype.setFromValue = function setFromValue(val: number) {
 SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDefault: () => void; }) {
     event.preventDefault();
 
-    const moveForListener = (e: { preventDefault?: (() => void) | (() => void); target?: any; pageY?: any; pageX?: any; touches?: any; }) => {
+    const moveForListener = (e: { preventDefault?: () => void; target?: any; pageY?: any; pageX?: any; touches?: any; }) => {
         if (e.target.classList.contains('range-slider__thumb')) {
             this.currentThumb = e.target;
         }
