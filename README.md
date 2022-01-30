@@ -101,3 +101,7 @@ sliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(thi
    ```javascript
    rangeSlider.setToValue(20);
    ```
+   
+
+## Диаграмма
+![UML diagram](./src/assets/slider-uml.drawio.svg)
