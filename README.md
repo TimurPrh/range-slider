@@ -32,8 +32,8 @@ new RangeSlider('#el' [, options]);
 
 ## Событие слайдера  
 `moveThumbEvent` - срабатывает при перемещении ручки и, соответственно, изменений значения. Событие содержит поле detail, в котором
-    * id - обозначение ручки. 0 - меньшая ручка, 1 - большая ручка
-    * inputVal - значение ручки
+   - id - обозначение ручки. 0 - меньшая ручка "от", 1 - большая ручка "до"  
+   - inputVal - значение ручки
 
 Пример использования
 ```javascript
@@ -57,8 +57,8 @@ sliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(thi
         - `min: number` - минимальное значение  
         - `max: number` - максимальное значение  
         - `step: number` - шаг  
-        - `from: number` - значение меньшей ручки (только при range - true)  
-        - `to: number` - значение большей ручки  
+        - `from: number` - значение "от" (только при range - true)  
+        - `to: number` - значение "до"  
         <br>
     ```javascript
     const rangeSlider = new RangeSlider(sliderWrapper, {
@@ -77,27 +77,27 @@ sliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(thi
 
 - `reInitialize(options)` - при реинициализации с аналогичным аргументом объектом настроек  
 
-```javascript
-rangeSlider.reInitialize({
-    range: false,
-    vertical: true
-});
-```
+   ```javascript
+   rangeSlider.reInitialize({
+       range: false,
+       vertical: true
+   });
+   ```
 
 - `getSettings()` - получение текущих настроек слайдера  
 
-```javascript
-const settings = rangeSlider.getSettings();
-```
+   ```javascript
+   const settings = rangeSlider.getSettings();
+   ```
 
-- `setToValue` - установка значения меньшей ручки (только при range - true)   
+- `setFromValue` - установка значения "от" (только при range - true)   
 
-```javascript
-rangeSlider.setToValue(20);
-```
+   ```javascript
+   rangeSlider.setFromValue(10);
+   ```
 
-- `setFromValue` - установка значения большей ручки  
+- `setToValue` - установка значения "до"  
 
-```javascript
-rangeSlider.setFromValue(10);
-```
+   ```javascript
+   rangeSlider.setToValue(20);
+   ```
