@@ -37,10 +37,10 @@ new RangeSlider('#el' [, options]);
 
 Пример использования
 ```javascript
-function fromAndToValuesHandler(e: CustomEvent) {
+function fromAndToValuesHandler(event) {
     // id === 0 - значение "from", id === 1 - значение "to"
-    console.log(`id - ${e.detail.id}`);
-    console.log(`значение - ${e.detail.inputVal}`);
+    console.log(`id - ${event.detail.id}`);
+    console.log(`значение - ${event.detail.inputVal}`);
 }
 sliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(this));
 ```

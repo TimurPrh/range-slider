@@ -11,9 +11,7 @@ const isProd = !isDev;
 console.log('is DEV: ', isDev);
 
 const optimization = () => {
-    const config = {
-        runtimeChunk: 'single',
-    };
+    const config = {};
 
     if (isProd) {
         config.minimizer = [
@@ -28,9 +26,9 @@ const optimization = () => {
 const filename = (ext) => {
     let name;
     if (ext === 'html') {
-        name = isDev ? `[name]/index.${ext}` : `[name]/index.[hash].${ext}`;
+        name = isDev ? `[name]/index.${ext}` : `[name]/index.${ext}`;
     } else {
-        name = isDev ? `[name]/[name].${ext}` : `[name]/[name].[hash].${ext}`;
+        name = isDev ? `[name]/[name].${ext}` : `[name]/[name].${ext}`;
     }
     return name;
 };
@@ -52,12 +50,16 @@ module.exports = {
     context: path.resolve(__dirname, 'src'),
     mode: 'development',
     entry: {
-        main: ['@babel/polyfill', './index.ts'],
-        plugin: ['@babel/polyfill', './slider-plugin/index.ts'],
+        'demo-page': ['@babel/polyfill/noConflict', './index.ts'],
+        'range-slider': ['@babel/polyfill/noConflict', './slider-plugin/index.ts'],
     },
     output: {
         filename: filename('js'),
         path: path.resolve(__dirname, 'dist'),
+        chunkFilename: 'js/[name].js',
+        library: isDev ? undefined : 'RangeSlider',
+        libraryTarget: isDev ? undefined : 'umd',
+        libraryExport: isDev ? undefined : 'default',
     },
     resolve: {
         extensions: ['.ts', '.js'],
@@ -70,7 +72,7 @@ module.exports = {
     plugins: [
         new HTMLWebpackPlugin({
             inject: true,
-            chunks: ['main'],
+            chunks: ['demo-page'],
             template: './index.pug',
             filename: 'index.html',
             minify: {
@@ -78,14 +80,14 @@ module.exports = {
             },
         }),
         new CleanWebpackPlugin(),
-        // new CopyWebpackPlugin({
-        //     patterns: [
-        //         {
-        //             from: path.resolve(__dirname, 'src/favicon.ico'),
-        //             to: path.resolve(__dirname, 'dist')
-        //         }
-        //     ]
-        // }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, 'src/favicon.ico'),
+                    to: path.resolve(__dirname, 'dist'),
+                },
+            ],
+        }),
         new MiniCssExtractPlugin({
             filename: filename('css'),
         }),
