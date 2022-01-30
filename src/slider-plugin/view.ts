@@ -3,11 +3,13 @@ import Scale from './subViews/scale';
 import Track from './subViews/track';
 import Inputs from './subViews/inputs';
 import Thumbs from './subViews/thumbs';
+import Border from './subViews/border';
 
 const SliderView = function SliderView(elem: Element) {
     this.elem = elem;
     this.render();
 
+    this.borderModule = new Border(this.slider);
     this.trackModule = new Track(this.slider);
     this.thumbsModule = new Thumbs(this.slider);
     this.labelsModule = new Labels(this.slider);
@@ -46,6 +48,7 @@ SliderView.prototype.initParams = function initParams(viewModel: {sliderMin: num
     this.offsetHeight = this.slider.offsetHeight;
 
     this.trackModule.render(bar);
+    this.borderModule.render();
     this.thumbsModule.render(isRange);
     this.labelsModule.render(isVertical);
     this.inputsModule.render(viewModel);
@@ -83,6 +86,7 @@ SliderView.prototype.getSliderWidth = function getSliderWidth() {
     return this.slider.offsetWidth;
 };
 SliderView.prototype.removeSubViews = function removeSubViews() {
+    this.borderModule.remove();
     this.trackModule.remove();
     this.thumbsModule.remove();
     this.labelsModule.remove();

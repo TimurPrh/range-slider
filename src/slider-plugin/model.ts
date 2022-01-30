@@ -274,7 +274,7 @@ SliderModel.prototype.calculateMove = function calculateMove(pos: number, id: nu
 
     this.calculateTrack();
 };
-SliderModel.prototype.calculateTrack = function calculateTrack(pos: number, id: number) {
+SliderModel.prototype.calculateTrack = function calculateTrack() {
     if (this.isRange) {
         if (this.isVertical) {
             this.outputOx.track = {
@@ -290,7 +290,7 @@ SliderModel.prototype.calculateTrack = function calculateTrack(pos: number, id: 
     } else if (this.isVertical) {
         this.outputOx.track = {
             begin: this.outputOx.thumbs[1].ox,
-            end: this.offsetWidth,
+            end: 100,
         };
     } else {
         this.outputOx.track = {

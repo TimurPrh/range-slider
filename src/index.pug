@@ -7,6 +7,8 @@ html(lang="en")
         title Plugin
     body 
         .main 
-            .main__wrapper
-                .main__slider.js-main__slider
-                .main__panel.js-main__panel
+            each val in [1, 2, 3, 4]
+                .main__wrapper
+                    .main__slider.js-main__slider
+                    .main__panel.js-main__panel
+                hr

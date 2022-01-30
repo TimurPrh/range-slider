@@ -10,12 +10,14 @@ import Labels from "../subViews/labels";
 import Scale from "../subViews/scale";
 import Thumbs from "../subViews/thumbs";
 import Track from "../subViews/track";
+import Border from "../subViews/border";
 
 jest.mock("../subViews/inputs");
 jest.mock("../subViews/labels");
 jest.mock("../subViews/scale");
 jest.mock("../subViews/thumbs");
 jest.mock("../subViews/track");
+jest.mock("../subViews/border");
 
 let wrapper;
 let view;
@@ -32,6 +34,7 @@ describe('View: render', () => {
         Scale.mockClear();
         Thumbs.mockClear();
         Track.mockClear();
+        Border.mockClear();
 
         view = new SliderView(wrapper);
     });
@@ -49,6 +52,7 @@ describe('View: render', () => {
         expect(Scale).toHaveBeenCalledTimes(1);
         expect(Thumbs).toHaveBeenCalledTimes(1);
         expect(Track).toHaveBeenCalledTimes(1);
+        expect(Border).toHaveBeenCalledTimes(1);
     });
 });
 
@@ -59,6 +63,7 @@ describe('View: initParams', () => {
         Scale.mockClear();
         Thumbs.mockClear();
         Track.mockClear();
+        Border.mockClear();
 
         view = new SliderView(wrapper);
     });
@@ -85,6 +90,11 @@ describe('View: initParams', () => {
         expect(view.rangeSlider).toHaveClass('range-slider');
         expect(view.rangeSlider).toBeVisible();
         expect(Track).toHaveBeenCalledTimes(1);
+
+        // mock border
+        const mockBorderInstance = Border.mock.instances[0];
+        const mockBorderRender = mockBorderInstance.render;
+        expect(mockBorderRender).toHaveBeenCalledTimes(1);
 
         // mock track
         const mockTrackInstance = Track.mock.instances[0];
@@ -152,6 +162,7 @@ describe('View: moveAt', () => {
         Scale.mockClear();
         Thumbs.mockClear();
         Track.mockClear();
+        Border.mockClear();
 
         view = new SliderView(wrapper);
     });
@@ -259,6 +270,7 @@ describe('View: getSliderWidth', () => {
         Scale.mockClear();
         Thumbs.mockClear();
         Track.mockClear();
+        Border.mockClear();
 
         view = new SliderView(wrapper);
     });
