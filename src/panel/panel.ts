@@ -144,10 +144,7 @@ Panel.prototype.setEvents = function setEvents() {
     };
 
     this.inputs.forEach((input: { addEventListener: (arg0: string, arg1: { (e: any): void; (e: any): void; }) => void; }) => {
-        input.addEventListener('change', (e: { target: { name: string; checked: boolean; value: string; }; wheelDelta: number; }) => {
-            changeInputs(e);
-        });
-        input.addEventListener('mousewheel', (e: { preventDefault?: any; wheelDelta: number; target: any; }) => {
+        const onMouseWheel = (e: { preventDefault?: any; wheelDelta: number; target: any; }) => {
             e.preventDefault();
             if (e.wheelDelta > 0) {
                 e.target.value = parseFloat(e.target.value) + parseFloat(e.target.step);
@@ -155,7 +152,9 @@ Panel.prototype.setEvents = function setEvents() {
                 e.target.value = parseFloat(e.target.value) - parseFloat(e.target.step);
             }
             changeInputs(e);
-        });
+        };
+        input.addEventListener('change', changeInputs.bind(null));
+        input.addEventListener('mousewheel', onMouseWheel);
     });
 };
 

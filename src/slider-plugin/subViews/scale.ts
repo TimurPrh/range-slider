@@ -97,8 +97,10 @@ Scale.prototype.checkCapacity = function checkCapacity(dim: string, viewModel: s
     }
 };
 Scale.prototype.findDer = function findDer(step: number, max: number, minRes: number) {
+    const isNotFoundedDivisibleX = (x: number, minResCondition: number, maxCondition: number) => (x < minResCondition || !this.isDivisible(maxCondition, x)) && x < maxCondition;
+
     let x = step;
-    while ((x < minRes || !this.isDivisible(max, x)) && x < max) {
+    while (isNotFoundedDivisibleX(x, minRes, max)) {
         if (x < minRes) {
             x = this.roundValue(Math.ceil(minRes / step) * step);
         } else {

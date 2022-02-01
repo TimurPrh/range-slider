@@ -55,7 +55,7 @@ SliderModel.prototype.setInitialSettings = function setInitialSettings(settings:
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
 
-    const degrees = [this.initialMin, this.initialStep, this.initialMax].filter((item) => item !== 0).map((item) => this.calculateSagnificantDegree(item));
+    const degrees = [this.initialMin, this.initialStep, this.initialMax].filter((item) => item !== 0).map((item) => this.calculateSignificantDegree(item));
 
     this.stepDegree = Math.min(...degrees);
 };
@@ -88,11 +88,11 @@ SliderModel.prototype.setSettings = function setSettings(settings: sliderSetting
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
 
-    const degrees = [this.initialMin, this.initialStep, this.initialMax].filter((item) => item !== 0).map((item) => this.calculateSagnificantDegree(item));
+    const degrees = [this.initialMin, this.initialStep, this.initialMax].filter((item) => item !== 0).map((item) => this.calculateSignificantDegree(item));
 
     this.stepDegree = Math.min(...degrees);
 };
-SliderModel.prototype.calculateSagnificantDegree = function calculateSagnificantDegree(val1: number) {
+SliderModel.prototype.calculateSignificantDegree = function calculateSignificantDegree(val1: number) {
     const val: number = Math.abs(val1);
     const significant = val.toExponential().replace(/^([0-9]+)\.?([0-9]+)?e[+\-0-9]*$/g, "$1$2").length; // количество значащих цифр
     const comma = val.toString().indexOf('.');

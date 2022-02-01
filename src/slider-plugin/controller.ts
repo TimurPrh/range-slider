@@ -121,23 +121,31 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDe
     const onMouseMove = (e: { preventDefault?: () => void; target?: any; pageY?: any; pageX?: any; }) => {
         moveForListener(e);
     };
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', () => {
-        document.removeEventListener('mousemove', onMouseMove);
-    }, { once: true });
 
-    document.addEventListener('touchmove', onMouseMove);
-    document.addEventListener('touchend', () => {
+    function handleOnMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+    }
+    function handleOnTouchEnd() {
         document.removeEventListener('touchmove', onMouseMove);
         document.removeEventListener('mousemove', onMouseMove);
-    }, { once: true });
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', handleOnMouseUp, { once: true });
+    document.addEventListener('touchmove', onMouseMove);
+    document.addEventListener('touchend', handleOnTouchEnd, { once: true });
 };
 SliderController.prototype.onClickBg = function onClickBg(event: { cancelable: any; preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; }; touches: { pageX: number; pageY: number; }[]; pageX: number; pageY: number; }) {
     if (event.cancelable) {
         event.preventDefault();
     }
-    const { classList, nodeName, parentNode } = event.target;
-    if (classList.contains('range-slider__range-bg') || classList.contains('range-slider__wrapper') || (nodeName === 'LI' && parentNode.classList.contains('range-slider__scale'))) {
+
+    const isClickableBackground = (e: { cancelable?: any; preventDefault?: () => void; target: any; touches?: { pageX: number; pageY: number; }[]; pageX?: number; pageY?: number; }) => {
+        const { classList, nodeName, parentNode } = e.target;
+        return classList.contains('range-slider__range-bg') || classList.contains('range-slider__wrapper') || (nodeName === 'LI' && parentNode.classList.contains('range-slider__scale'));
+    };
+
+    if (isClickableBackground(event)) {
         let ox: number;
         let pageX: number;
         let pageY: number;
