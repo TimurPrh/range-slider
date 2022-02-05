@@ -15,21 +15,59 @@ interface sliderSettings {
     to: number,
 }
 
-const RangeSlider = function RangeSlider(elem: Element, settings: sliderSettings) {
-    this.sliderController = new SliderController(elem);
-    this.sliderController.initialize(settings);
-};
-RangeSlider.prototype.getSettings = function getSettings() {
-    return this.sliderController.getSettings();
-};
-RangeSlider.prototype.reInitialize = function reInitialize(settings: sliderSettings) {
-    this.sliderController.reInitialize(settings);
-};
-RangeSlider.prototype.setToValue = function setToValue(val: number) {
-    this.sliderController.setToValue(val);
-};
-RangeSlider.prototype.setFromValue = function setFromValue(val: number) {
-    this.sliderController.setFromValue(val);
-};
+declare global {
+    interface JQuery {
+        slider(args: any, options?: any): JQuery & sliderSettings;
+    }
+}
 
-export default RangeSlider;
+(function customSliderOuter($) {
+    const methods = {
+        init(options: any) {
+            const $this = $(this);
+            const data = $this.data('slider');
+
+            const controller = new SliderController($this);
+            if (!data) {
+                // Тут выполняем инициализацию
+                controller.initialize(options);
+                $(this).data('slider', controller);
+            }
+        },
+        reInit(options: any) {
+            const $this = $(this);
+            const data = $this.data('slider');
+
+            data.reInitialize(options);
+        },
+        getSettings() {
+            const $this = $(this);
+            const data = $this.data('slider');
+
+            return data.getSettings();
+        },
+        setToValue(val: number) {
+            const $this = $(this);
+            const data = $this.data('slider');
+            data.setToValue(val);
+            return this;
+        },
+        setFromValue(val: number) {
+            const $this = $(this);
+            const data = $this.data('slider');
+            data.setFromValue(val);
+            return this;
+        },
+    };
+
+    jQuery.fn.slider = function customSlider(method, ...args) {
+        if (methods[method]) {
+            return methods[method].apply(this, args);
+        } if (typeof method === 'object' || !method) {
+            return methods.init.apply(this, [method]);
+        }
+        return $.error(`Метод с именем ${method} не существует для jQuery.slider`);
+    };
+}(jQuery));
+
+export default $.fn.slider;

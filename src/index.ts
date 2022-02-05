@@ -1,11 +1,13 @@
-import RangeSlider from './slider-plugin/index';
+import $ from "jquery";
+// import RangeSlider from './slider-plugin/index';
+import './slider-plugin/index';
 import Panel from './panel/panel';
 import './styles/style.scss';
 
-const rangeSliders = [];
+const $rangeSliders = [];
 const panels = [];
 
-const rangeSliderWrappers = document.querySelectorAll('.js-main__slider');
+const $rangeSliderWrappers = $('.js-main__slider');
 const panelWrappers = document.querySelectorAll('.js-main__panel');
 
 const sliderSettings = [
@@ -23,34 +25,35 @@ const sliderSettings = [
     },
 ];
 
-rangeSliderWrappers.forEach((rangeSliderWrapper, i) => {
-    rangeSliders[i] = new RangeSlider(rangeSliderWrapper, sliderSettings[i]);
-    panels[i] = new Panel(panelWrappers[i], rangeSliders[i].getSettings());
+panelWrappers.forEach((panelWrapper, i) => {
+    $rangeSliders[i] = $rangeSliderWrappers.eq(i).slider(sliderSettings[i]);
+    const settingsFromSlider = $rangeSliderWrappers.eq(i).slider('getSettings');
+    panels[i] = new Panel(panelWrapper, settingsFromSlider);
 
-    function fromAndToValuesHandler(e: CustomEvent) {
-        if (e.detail.id === 0) {
-            panels[i].changeFromValue(e.detail.inputVal);
-        } else if (e.detail.id === 1) {
-            panels[i].changeToValue(e.detail.inputVal);
+    function fromAndToValuesHandler(e: CustomEvent, { inputVal, id }) {
+        if (id === 0) {
+            panels[i].changeFromValue(inputVal);
+        } else if (id === 1) {
+            panels[i].changeToValue(inputVal);
         }
     }
-    rangeSliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(this));
+    $rangeSliderWrappers.eq(i).on('moveThumbEvent', fromAndToValuesHandler.bind(this));
 
     function configurationHandler(e: CustomEvent) {
         const obj = {};
         obj[e.detail.key] = e.detail.value;
 
         if (e.detail.key === 'to') {
-            rangeSliders[i].setToValue(e.detail.value);
+            $rangeSliderWrappers.eq(i).slider('setToValue', e.detail.value);
         } else if (e.detail.key === 'from') {
-            rangeSliders[i].setFromValue(e.detail.value);
+            $rangeSliderWrappers.eq(i).slider('setFromValue', e.detail.value);
         } else {
-            rangeSliders[i].reInitialize(obj);
+            $rangeSliderWrappers.eq(i).slider('reInit', obj);
         }
 
-        const realSettings = rangeSliders[i].getSettings();
+        const realSettings = $rangeSliderWrappers.eq(i).slider('getSettings');
         panels[i].changeFromValue(realSettings.from);
         panels[i].changeToValue(realSettings.to);
     }
-    panelWrappers[i].addEventListener('changedInputEvent', configurationHandler.bind(this));
+    panelWrapper.addEventListener('changedInputEvent', configurationHandler.bind(this));
 });

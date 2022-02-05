@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+const webpack = require("webpack");
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = !isDev;
@@ -66,7 +67,7 @@ module.exports = {
     },
     optimization: optimization(),
     devServer: {
-        port: 4200,
+        port: 4201,
     },
     devtool: isProd ? false : 'source-map',
     plugins: [
@@ -90,6 +91,10 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             filename: filename('css'),
+        }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
         }),
     ],
     module: {
@@ -150,5 +155,8 @@ module.exports = {
                 },
             },
         ],
+    },
+    externals: {
+        jquery: 'jQuery',
     },
 };

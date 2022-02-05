@@ -1,7 +1,7 @@
 import SliderView from "./view";
 import SliderModel from "./model";
 
-const SliderController = function SliderController(elem: Element) {
+const SliderController = function SliderController(elem) {
     this.sliderView = new SliderView(elem);
     this.sliderModel = new SliderModel();
 };
@@ -33,8 +33,8 @@ SliderController.prototype.getSettings = function getSettings() {
         min: this.sliderModel.initialMin,
         max: this.sliderModel.initialMax,
         step: this.sliderModel.initialStep,
-        from: this.sliderView.inputsModule.inputs[0].value,
-        to: this.sliderView.inputsModule.inputs[1].value,
+        from: this.sliderView.inputsModule.$inputs[0].value,
+        to: this.sliderView.inputsModule.$inputs[1].value,
     };
 };
 SliderController.prototype.initView = function initView(props:{
@@ -68,7 +68,9 @@ SliderController.prototype.setInitialState = function setInitialState() {
         this.sliderView.moveAt(this.sliderModel.outputOx, 0);
     }
 
-    new ResizeObserver(() => this.setModelWidth()).observe(this.sliderView.rangeSlider);
+    this.sliderView.$rangeSlider.resize(() => {
+        this.setModelWidth();
+    });
 };
 SliderController.prototype.setModelWidth = function setModelWidth() {
     this.sliderModel.offsetWidth = this.sliderView.getSliderWidth();
@@ -109,9 +111,9 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDe
         }
 
         if (this.sliderModel.isVertical) {
-            this.sliderModel.calculateMove(pageY - this.sliderView.slider.offsetTop, currentThumbId);
+            this.sliderModel.calculateMove(pageY - this.sliderView.$slider.offset().top, currentThumbId);
         } else {
-            this.sliderModel.calculateMove(pageX - this.sliderView.slider.offsetLeft, currentThumbId);
+            this.sliderModel.calculateMove(pageX - this.sliderView.$slider.offset().left, currentThumbId);
         }
 
         this.sliderView.moveAt(this.sliderModel.outputOx, currentThumbId);
@@ -157,9 +159,9 @@ SliderController.prototype.onClickBg = function onClickBg(event: { cancelable: a
             pageY = event.pageY;
         }
         if (this.sliderModel.isVertical) {
-            ox = pageY - this.sliderView.slider.offsetTop;
+            ox = pageY - this.sliderView.$slider.offset().top;
         } else {
-            ox = pageX - this.sliderView.slider.offsetLeft;
+            ox = pageX - this.sliderView.$slider.offset().left;
         }
         const i = this.sliderModel.calculateIndex(ox);
         this.sliderModel.calculateMove(ox, i);

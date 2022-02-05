@@ -140,7 +140,7 @@ SliderModel.prototype.setInitialOutput = function setInitialOutput() {
     if (!((a - b * Math.floor(a / b)) === 0)) { // если разница максимального и минимального значения не делится на шаг, то переписываем максимальное значение
         this.initialMax = this.roundValue(this.initialMin + this.initialStep * Math.floor((this.initialMax - this.initialMin) / this.initialStep), this.stepDegree);
     }
-    this.currentValue[1] = this.roundValue(this.initialMin + this.initialStep * Math.floor((this.currentValue[1] - this.initialMin) / this.initialStep), this.stepDegree);
+    this.currentValue[1] = this.roundValue(this.initialMin + this.initialStep * Math.round((this.currentValue[1] - this.initialMin) / this.initialStep), this.stepDegree);
     if (this.isRange) {
         this.currentValue[0] = this.roundValue(this.initialMin + this.initialStep * Math.round((this.currentValue[0] - this.initialMin) / this.initialStep), this.stepDegree);
 

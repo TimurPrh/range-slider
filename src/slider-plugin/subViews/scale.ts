@@ -5,8 +5,8 @@ interface settings {
     oldStep: number,
 }
 
-const Scale = function Scale(elem: HTMLElement) {
-    this.elem = elem;
+const Scale = function Scale($elem: HTMLElement) {
+    this.$elem = $elem;
 };
 Scale.prototype.render = function render(scale: boolean, vertical: boolean, viewModel: settings, stepDegree: number, offsetWidth: number, offsetHeight: number) {
     if (scale) {
@@ -31,8 +31,8 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
             scaleElement.style.gridTemplateRows = `repeat(${stepCount}, ${(this.stepWidth * 100) / offsetHeight}%)`;
             const scaleMarginTop = ((offsetHeight / (stepCount - 1) - this.stepWidth) * (stepCount - 1));
             scaleElement.style.marginTop = `${(scaleMarginTop * 100) / offsetHeight}%`;
-            this.elem.parentNode.style.display = 'flex';
-            this.elem.parentNode.prepend(scaleElement);
+            this.$elem.parent().css('display', 'flex');
+            this.$elem.parent().prepend(scaleElement);
 
             this.scaleElement = scaleElement;
 
@@ -54,8 +54,8 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
             scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${(this.stepWidth * 100) / offsetWidth}%)`;
             const scaleMarginRight = ((offsetWidth / (stepCount - 1) - this.stepWidth) * (stepCount - 1));
             scaleElement.style.marginRight = `${(scaleMarginRight * 100) / offsetWidth}%`;
-            this.elem.parentNode.style.display = 'block';
-            this.elem.parentNode.append(scaleElement);
+            this.$elem.parent().css('display', 'block');
+            this.$elem.parent().append(scaleElement);
 
             this.scaleElement = scaleElement;
 
@@ -128,8 +128,8 @@ Scale.prototype.roundValue = function roundValue(val: number) {
     return +(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] + exp) : exp}`);
 };
 Scale.prototype.remove = function remove() {
-    if (this.elem.parentNode.querySelector('.range-slider__scale')) {
-        this.elem.parentNode.querySelector('.range-slider__scale').remove();
+    if (this.$elem.parent().find('.range-slider__scale')) {
+        this.$elem.parent().find('.range-slider__scale').remove();
     }
 };
 

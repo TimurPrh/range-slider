@@ -1,5 +1,5 @@
-const Thumbs = function Thumbs(elem: Element) {
-    this.elem = elem;
+const Thumbs = function Thumbs($elem: Element) {
+    this.$elem = $elem;
 
     this.onMoveThumb = null;
 };
@@ -8,36 +8,36 @@ Thumbs.prototype.render = function render(isRange: boolean) {
         const thumb = document.createElement('div');
         thumb.classList.add('range-slider__thumb');
         thumb.dataset.id = i.toString();
-        this.elem.append(thumb);
+        this.$elem.append(thumb);
     }
-    this.thumbs = this.elem.querySelectorAll('.range-slider__thumb');
+    this.$thumbs = this.$elem.find('.range-slider__thumb');
 
     if (!isRange) {
-        this.thumbs[0].style.display = 'none';
+        this.$thumbs.eq(0).css('display', 'none');
     } else {
-        this.thumbs[0].style.display = 'block';
+        this.$thumbs.eq(0).css('display', 'block');
     }
 
     if (isRange) {
-        this.thumbs.forEach((thumb: HTMLElement) => {
-            thumb.addEventListener('mousedown', this.onMoveThumb);
+        this.$thumbs.each((i: number, thumb) => {
+            thumb.addEventListener("mousedown", this.onMoveThumb);
             thumb.addEventListener('touchstart', this.onMoveThumb);
         });
     } else {
-        this.thumbs[1].addEventListener('mousedown', this.onMoveThumb);
-        this.thumbs[1].addEventListener('touchstart', this.onMoveThumb);
+        this.$thumbs.eq(1).on('mousedown', this.onMoveThumb);
+        this.$thumbs.eq(1).on('touchstart', this.onMoveThumb);
     }
 };
 Thumbs.prototype.change = function change(id: number, thumbOx: number, isVertical: boolean) {
     if (isVertical) {
-        this.thumbs[id].style.top = `${thumbOx}%`;
+        this.$thumbs.eq(id).css('top', `${thumbOx}%`);
     } else {
-        this.thumbs[id].style.left = `${thumbOx}%`;
+        this.$thumbs.eq(id).css('left', `${thumbOx}%`);
     }
 };
 Thumbs.prototype.remove = function remove() {
-    if (this.elem.querySelector('.range-slider__thumb')) {
-        this.elem.querySelectorAll('.range-slider__thumb').forEach((item: Element) => item.remove());
+    if (this.$elem.find('.range-slider__thumb')) {
+        this.$elem.find('.range-slider__thumb').each((i: number, item: Element) => item.remove());
     }
 };
 
