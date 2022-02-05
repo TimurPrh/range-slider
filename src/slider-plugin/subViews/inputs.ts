@@ -21,9 +21,7 @@ Inputs.prototype.change = function change(val: number, id: number) {
     return this.$inputs.eq(id).val();
 };
 Inputs.prototype.remove = function remove() {
-    if (this.$elem.find('.range-slider__input')) {
-        this.$elem.find('.range-slider__input').each((i: number, item: Element) => item.remove());
-    }
+    this.$elem.find('.range-slider__input').each((i: number, item: Element) => item.remove());
 };
 
 export default Inputs;

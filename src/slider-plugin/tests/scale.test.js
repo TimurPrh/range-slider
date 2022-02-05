@@ -2,20 +2,23 @@
  * @jest-environment jsdom
 */
 
+import $ from 'jquery';
 import '@testing-library/jest-dom';
 import Scale from "../subViews/scale";
 
-let wrapper;
+let $wrapper;
 let scale;
 
 beforeAll(() => {
-    wrapper = document.createElement('div');
-    document.body.appendChild(wrapper);
+    $('<div>', {
+        class: 'test-elem',
+    }).appendTo('body');
+    $wrapper = $('.test-elem');
 });
 
 describe('Subview - scale: render', () => {
     beforeEach(() => {
-        scale = new Scale(wrapper);
+        scale = new Scale($wrapper);
     });
     afterEach(() => {
         scale.remove();
@@ -160,7 +163,7 @@ describe('Subview - scale: render', () => {
 
 describe('Subview - scale: remove', () => {
     beforeEach(() => {
-        scale = new Scale(wrapper);
+        scale = new Scale($wrapper);
     });
     test('should remove scale', () => {
         const opts = {
@@ -188,7 +191,7 @@ describe('Subview - scale: remove', () => {
 
 describe('Subview - scale: findDer', () => {
     beforeEach(() => {
-        scale = new Scale(wrapper);
+        scale = new Scale($wrapper);
     });
     afterEach(() => {
         scale.remove();
@@ -201,7 +204,7 @@ describe('Subview - scale: findDer', () => {
 
 describe('Subview - scale: roundValue', () => {
     beforeEach(() => {
-        scale = new Scale(wrapper);
+        scale = new Scale($wrapper);
     });
     afterEach(() => {
         scale.remove();

@@ -2,6 +2,7 @@
  * @jest-environment jsdom
 */
 
+import $ from 'jquery';
 import '@testing-library/jest-dom';
 import SliderView from "../view";
 
@@ -19,12 +20,14 @@ jest.mock("../subViews/thumbs");
 jest.mock("../subViews/track");
 jest.mock("../subViews/border");
 
-let wrapper;
+let $wrapper;
 let view;
 
 beforeAll(() => {
-    wrapper = document.createElement('div');
-    document.body.appendChild(wrapper);
+    $('<div>', {
+        class: 'test-elem',
+    }).appendTo('body');
+    $wrapper = $('.test-elem');
 });
 
 describe('View: render', () => {
@@ -36,7 +39,7 @@ describe('View: render', () => {
         Track.mockClear();
         Border.mockClear();
 
-        view = new SliderView(wrapper);
+        view = new SliderView($wrapper);
     });
     afterEach(() => {
         view.removeSubViews();
@@ -44,8 +47,9 @@ describe('View: render', () => {
 
     test('should render view', () => {
         view.render();
-        expect(view.rangeSlider).toHaveClass('range-slider');
-        expect(view.rangeSlider).toBeVisible();
+        const rangeSliderElem = document.querySelector('.range-slider');
+        expect(rangeSliderElem).toHaveClass('range-slider');
+        expect(rangeSliderElem).toBeVisible();
 
         expect(Inputs).toHaveBeenCalledTimes(1);
         expect(Labels).toHaveBeenCalledTimes(1);
@@ -65,7 +69,7 @@ describe('View: initParams', () => {
         Track.mockClear();
         Border.mockClear();
 
-        view = new SliderView(wrapper);
+        view = new SliderView($wrapper);
     });
     afterEach(() => {
         view.removeSubViews();
@@ -87,8 +91,9 @@ describe('View: initParams', () => {
         };
         view.initParams(...Object.values(opts));
 
-        expect(view.rangeSlider).toHaveClass('range-slider');
-        expect(view.rangeSlider).toBeVisible();
+        const rangeSliderElem = document.querySelector('.range-slider');
+        expect(rangeSliderElem).toHaveClass('range-slider');
+        expect(rangeSliderElem).toBeVisible();
         expect(Track).toHaveBeenCalledTimes(1);
 
         // mock border
@@ -148,9 +153,11 @@ describe('View: initParams', () => {
 
         view.initParams(...Object.values(opts));
 
-        expect(view.rangeSlider).toHaveClass('range-slider');
-        expect(view.slider).toHaveClass('range-slider__wrapper_vertical');
-        expect(view.rangeSlider).toBeVisible();
+        const rangeSliderElem = document.querySelector('.range-slider');
+        const sliderElem = document.querySelector('.range-slider__wrapper');
+        expect(rangeSliderElem).toHaveClass('range-slider');
+        expect(sliderElem).toHaveClass('range-slider__wrapper_vertical');
+        expect(rangeSliderElem).toBeVisible();
         expect(Track).toHaveBeenCalledTimes(1);
     });
 });
@@ -164,7 +171,7 @@ describe('View: moveAt', () => {
         Track.mockClear();
         Border.mockClear();
 
-        view = new SliderView(wrapper);
+        view = new SliderView($wrapper);
     });
     afterEach(() => {
         view.removeSubViews();
@@ -222,8 +229,18 @@ describe('View: moveAt', () => {
             },
             id: 0,
         };
-        Object.defineProperty(view.trackModule, 'track', { value: { offsetWidth: 100 } });
-        Object.defineProperty(view.thumbsModule, 'thumbs', { value: ['', { offsetWidth: 10 }] });
+        Object.defineProperty(view.trackModule, '$track', { value: { width: jest.fn(() => 100) } });
+
+        const returnedFromEq = {
+            width: jest.fn(() => 10),
+        };
+        const mockCallback = jest.fn(() => returnedFromEq);
+        Object.defineProperty(view.thumbsModule, '$thumbs', {
+            value: {
+                eq: mockCallback,
+            },
+        });
+
         view.isRange = true;
         view.moveAt(...Object.values(moveAtOpts));
 
@@ -272,7 +289,7 @@ describe('View: getSliderWidth', () => {
         Track.mockClear();
         Border.mockClear();
 
-        view = new SliderView(wrapper);
+        view = new SliderView($wrapper);
     });
     afterEach(() => {
         view.removeSubViews();
@@ -280,14 +297,14 @@ describe('View: getSliderWidth', () => {
     test('should return actual size of the slider', () => {
         const offset = 100;
         view.isVertical = false;
-        Object.defineProperty(view.slider, 'offsetWidth', { value: offset });
+        view.$slider.width = jest.fn(() => offset);
 
         expect(view.getSliderWidth()).toEqual(offset);
     });
     test('should return actual size of the slider', () => {
         const offset = 100;
         view.isVertical = true;
-        Object.defineProperty(view.slider, 'offsetHeight', { value: offset });
+        view.$slider.height = jest.fn(() => offset);
 
         expect(view.getSliderWidth()).toEqual(offset);
     });

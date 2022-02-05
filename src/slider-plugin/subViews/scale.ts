@@ -128,9 +128,7 @@ Scale.prototype.roundValue = function roundValue(val: number) {
     return +(`${valueStr[0]}e${valueStr[1] ? (+valueStr[1] + exp) : exp}`);
 };
 Scale.prototype.remove = function remove() {
-    if (this.$elem.parent().find('.range-slider__scale')) {
-        this.$elem.parent().find('.range-slider__scale').remove();
-    }
+    this.$elem.parent().find('.range-slider__scale').remove();
 };
 
 export default Scale;

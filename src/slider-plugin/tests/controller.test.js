@@ -25,6 +25,7 @@ describe('Controller: initialize', () => {
     test('should initialize slider', () => {
         Object.defineProperty(controller.sliderView, 'thumbsModule', { value: { onMoveThumb: null } });
         controller.sliderView.getSliderWidth = jest.fn(() => 200);
+        Object.defineProperty(controller.sliderView, '$rangeSlider', { value: { resize: jest.fn((callback) => callback()) } });
 
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
         Object.defineProperty(controller.sliderModel, 'isRange', { value: false });
@@ -49,8 +50,8 @@ describe('Controller: initialize', () => {
         expect(mockModelSetInitialOutput).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -58,6 +59,7 @@ describe('Controller: initialize', () => {
     test('should initialize slider with options isVertical and isRange - true', () => {
         Object.defineProperty(controller.sliderView, 'thumbsModule', { value: { onMoveThumb: null } });
         controller.sliderView.getSliderWidth = jest.fn(() => 200);
+        Object.defineProperty(controller.sliderView, '$rangeSlider', { value: { resize: jest.fn((callback) => callback()) } });
 
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
         Object.defineProperty(controller.sliderModel, 'isRange', { value: true });
@@ -103,6 +105,7 @@ describe('Controller: reInitialize', () => {
     test('should reinitialize slider', () => {
         Object.defineProperty(controller.sliderView, 'thumbsModule', { value: { onMoveThumb: null } });
         controller.sliderView.getSliderWidth = jest.fn(() => 200);
+        Object.defineProperty(controller.sliderView, '$rangeSlider', { value: { resize: jest.fn((callback) => callback()) } });
 
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
         Object.defineProperty(controller.sliderModel, 'isRange', { value: false });
@@ -153,7 +156,7 @@ describe('Controller: getSettings', () => {
             from: 10,
             to: 20,
         };
-        Object.defineProperty(controller.sliderView, 'inputsModule', { value: { inputs: [{ value: 10 }, { value: 20 }] } });
+        Object.defineProperty(controller.sliderView, 'inputsModule', { value: { $inputs: [{ value: 10 }, { value: 20 }] } });
         controller.sliderModel.isRange = settings.range;
         controller.sliderModel.isVertical = settings.vertical;
         controller.sliderModel.viewScale = settings.scale;
@@ -285,7 +288,11 @@ describe('Controller: onClickBg', () => {
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
         controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
 
@@ -335,7 +342,11 @@ describe('Controller: onClickBg', () => {
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
         controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
 
@@ -361,7 +372,7 @@ describe('Controller: onClickBg', () => {
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
     });
-    test('should not set value on slider, because classList doesn`t contains', () => {
+    test('should not set value on slider, because classList does not contains', () => {
         const event = {
             preventDefault: () => {},
             target: {
@@ -379,7 +390,11 @@ describe('Controller: onClickBg', () => {
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
         controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
 
@@ -418,7 +433,11 @@ describe('Controller: onClickBg', () => {
         };
         controller.sliderModel.isVertical = true;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
         controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
 
@@ -464,7 +483,11 @@ describe('Controller: onClickBg', () => {
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
         controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
 
@@ -510,7 +533,11 @@ describe('Controller: onClickBg', () => {
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
         controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
 
@@ -566,7 +593,11 @@ describe('Controller: onMoveThumb', () => {
             callback(event);
         });
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
 
         controller.onMoveThumb(event);
@@ -614,7 +645,11 @@ describe('Controller: onMoveThumb', () => {
             callback(event);
         });
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
 
         controller.onMoveThumb(event);
@@ -657,7 +692,11 @@ describe('Controller: onMoveThumb', () => {
             callback(event);
         });
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
 
         controller.onMoveThumb(event);
@@ -702,7 +741,11 @@ describe('Controller: onMoveThumb', () => {
             callback(event);
         });
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
-        Object.defineProperty(controller.sliderView, 'slider', { value: { offsetLeft: 20, offsetTop: 30 } });
+        const mockSliderCoords = jest.fn(() => ({
+            left: 20,
+            top: 30,
+        }));
+        Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
 
         controller.onMoveThumb(event);

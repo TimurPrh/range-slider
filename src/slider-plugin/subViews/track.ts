@@ -24,9 +24,7 @@ Track.prototype.change = function change(begin: number, end: number, vertical: b
     }
 };
 Track.prototype.remove = function remove() {
-    if (this.$elem.parent().find('.range-slider__range-bg')) {
-        this.$elem.parent().find('.range-slider__range-bg').remove();
-    }
+    this.$elem.parent().find('.range-slider__range-bg').remove();
 };
 
 export default Track;

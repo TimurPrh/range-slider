@@ -35,9 +35,7 @@ Labels.prototype.change = function change(id: number, thumbOx: number, offsetLef
     $label.html(inputVal);
 };
 Labels.prototype.remove = function remove() {
-    if (this.$elem.find('.range-slider__result')) {
-        this.$elem.find('.range-slider__result').each((i: number, item: Element) => item.remove());
-    }
+    this.$elem.find('.range-slider__result').each((i: number, item: Element) => item.remove());
 };
 
 export default Labels;

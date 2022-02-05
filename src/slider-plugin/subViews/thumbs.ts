@@ -36,9 +36,7 @@ Thumbs.prototype.change = function change(id: number, thumbOx: number, isVertica
     }
 };
 Thumbs.prototype.remove = function remove() {
-    if (this.$elem.find('.range-slider__thumb')) {
-        this.$elem.find('.range-slider__thumb').each((i: number, item: Element) => item.remove());
-    }
+    this.$elem.find('.range-slider__thumb').each((i: number, item: Element) => item.remove());
 };
 
 export default Thumbs;

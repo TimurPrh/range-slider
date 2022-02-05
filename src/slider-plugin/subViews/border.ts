@@ -9,9 +9,7 @@ Border.prototype.render = function render(bar: boolean) {
     this.$border = this.$elem.find('.range-slider__border');
 };
 Border.prototype.remove = function remove() {
-    if (this.$elem.parent().find('.range-slider__border')) {
-        this.$elem.parent().find('.range-slider__border').remove();
-    }
+    this.$elem.parent().find('.range-slider__border').remove();
 };
 
 export default Border;
