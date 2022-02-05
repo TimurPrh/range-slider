@@ -84,8 +84,8 @@ describe('Controller: initialize', () => {
         expect(mockModelSetInitialOutput).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt.mock.calls[1][0]).toEqual('test Ox');
@@ -127,8 +127,8 @@ describe('Controller: reInitialize', () => {
         expect(mockModelSetInitialOutput).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -192,8 +192,8 @@ describe('Controller: initView', () => {
         controller.initView(props);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewInitParams = mockViewlInstance.initParams;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewInitParams = mockViewInstance.initParams;
         expect(mockViewInitParams.mock.calls[0][0]).toEqual(props);
         expect(mockViewInitParams.mock.calls[0][1]).toEqual(controller.sliderModel.isVertical);
         expect(mockViewInitParams.mock.calls[0][2]).toEqual(controller.sliderModel.isRange);
@@ -226,8 +226,8 @@ describe('Controller: setToValue', () => {
         expect(mockModelSetInitialOutput).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -255,8 +255,8 @@ describe('Controller: setFromValue', () => {
         expect(mockModelSetInitialOutput).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(0);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -312,8 +312,8 @@ describe('Controller: onClickBg', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -366,8 +366,8 @@ describe('Controller: onClickBg', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -411,8 +411,8 @@ describe('Controller: onClickBg', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(0);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt).toHaveBeenCalledTimes(0);
     });
     test('should set value on slider with vertical option', () => {
@@ -457,8 +457,8 @@ describe('Controller: onClickBg', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -507,8 +507,8 @@ describe('Controller: onClickBg', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -557,8 +557,8 @@ describe('Controller: onClickBg', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
@@ -613,8 +613,8 @@ describe('Controller: onMoveThumb', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(3);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(3);
@@ -665,8 +665,8 @@ describe('Controller: onMoveThumb', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(3);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(3);
@@ -712,8 +712,8 @@ describe('Controller: onMoveThumb', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(3);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(3);
@@ -761,8 +761,8 @@ describe('Controller: onMoveThumb', () => {
         expect(mockModelCalculateMove).toHaveBeenCalledTimes(3);
 
         // mock view
-        const mockViewlInstance = SliderView.mock.instances[0];
-        const mockViewMoveAt = mockViewlInstance.moveAt;
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
         expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(3);

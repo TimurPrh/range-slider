@@ -10,45 +10,44 @@
 
 ## Использование
 ```javascript
-import RangeSlider from './range-slider.js';
-import './range-slider.css'
+import './range-slider.js';
+import './range-slider.css';
 
-new RangeSlider('#el' [, options]);
+$('#el').slider(options);
 ```
 
 ## Архитектура  
-* Основной модуль RangeSlider реализует интерфейс взаимодействия с модулем SliderController.
+* Основной модуль - функция customSliderOuter реализует интерфейс взаимодействия с модулем SliderController.
 * Модуль SliderController отвечает за взаимодействие с пользователем и модулями SliderModel и SliderView.
 * Модуль SliderModel отвечает за бизнес-логику слайдера.  
 Он принимает начальные установки.  
-При перерасчете принимет значение в пикселях при перемещении ручки пользователем или конкретные значение при установке положения ручки из JavaScript.  
+При перерасчете принимает значение в пикселях при перемещении ручки пользователем или конкретные значение при установке положения ручки из JavaScript.  
 В нем формируется объект outputOx, содержащий:
     * для каждой ручки положение в процентах и текущее значение;
     * начало и конец прогресс бара в процентах.
 * Модуль SliderView отвечает за отображение элементов слайдера.  
 При начальной установке и реинициализации он отрисовывает каждый элемент слайдера.    
-При принятии объекта outputOx меняются (но не перерисовываются польностью) элементы шкалы, лэйблов и ручек. Также меняется скрытый элемент input.  
+При принятии объекта outputOx меняются (но не перерисовываются полностью) элементы шкалы, лэйблов и ручек. Также меняется скрытый элемент input.  
 В модуле SliderView импортируются subViews: inputs (скрытые input'ы), labels (значения над ручками), scale (шкала), thumbs (ручки), track (прогресс бар), border (граница).
 
 ## Событие слайдера  
-`moveThumbEvent` - срабатывает при перемещении ручки и, соответственно, изменений значения. Событие содержит поле detail, в котором
+`moveThumbEvent` - срабатывает при перемещении ручки и, соответственно, изменений значения. Второй аргумент функции-коллбэка содержит объект в котором:
    - id - обозначение ручки. 0 - меньшая ручка "от", 1 - большая ручка "до"  
    - inputVal - значение ручки
 
 Пример использования
 ```javascript
-function fromAndToValuesHandler(event) {
+function fromAndToValuesHandler(event, { inputVal, id }) {
     // id === 0 - значение "from", id === 1 - значение "to"
-    console.log(`id - ${event.detail.id}`);
-    console.log(`значение - ${event.detail.inputVal}`);
+    console.log(`id - ${id}`);
+    console.log(`значение - ${inputVal}`);
 }
-sliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(this));
+$sliderWrapper.on('moveThumbEvent', fromAndToValuesHandler.bind(this));
 ```
 
 ## API слайдера  
--  `new RangeSlider('#el' [, options])` - при первичной инициализации слайдера.  
-    - Первый аргумент - элемент, в который помещается слайдер.  
-    - Второй аргумент - объект настроек:  
+-  `$('#el').slider(options)` - при первичной инициализации слайдера.  
+    - Первый аргумент - объект настроек:  
         - `range: boolean` - слайдер в виде диапазона с двумя ручками  
         - `vertical: boolean` - вертикальный вариант слайдера  
         - `scale: boolean` - добавление шкалы  
@@ -61,7 +60,7 @@ sliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(thi
         - `to: number` - значение "до"  
         <br>
     ```javascript
-    const rangeSlider = new RangeSlider(sliderWrapper, {
+    $('#el').slider({
         range: true,
         vertical: false,
         scale: true,
@@ -75,31 +74,31 @@ sliderWrapper.addEventListener('moveThumbEvent', fromAndToValuesHandler.bind(thi
     });
     ```
 
-- `reInitialize(options)` - при реинициализации с аналогичным аргументом объектом настроек  
+- `reInit` - при реинициализации с аналогичным аргументом объектом настроек  
 
    ```javascript
-   rangeSlider.reInitialize({
+   rangeSlider.slider('reInit', {
        range: false,
        vertical: true
    });
    ```
 
-- `getSettings()` - получение текущих настроек слайдера  
+- `getSettings` - получение текущих настроек слайдера  
 
    ```javascript
-   const settings = rangeSlider.getSettings();
+   const settings = $rangeSlider.slider('getSettings');
    ```
 
 - `setFromValue` - установка значения "от" (только при range - true)   
 
    ```javascript
-   rangeSlider.setFromValue(10);
+   $rangeSlider.slider('setFromValue', 10)
    ```
 
 - `setToValue` - установка значения "до"  
 
    ```javascript
-   rangeSlider.setToValue(20);
+   $rangeSlider.slider('setToValue', 20)
    ```
    
 
