@@ -32,5 +32,8 @@
                 "extensions": [".js", ".jsx", ".ts", ".tsx"]
             }
         }
+    },
+    "globals": {
+        "JQuery": true
     }
 }

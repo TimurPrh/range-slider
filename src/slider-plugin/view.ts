@@ -5,7 +5,7 @@ import Inputs from './subViews/inputs';
 import Thumbs from './subViews/thumbs';
 import Border from './subViews/border';
 
-const SliderView = function SliderView($elem) {
+const SliderView = function SliderView($elem: JQuery<HTMLElement>) {
     this.$elem = $elem;
     this.render();
 

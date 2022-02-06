@@ -1,11 +1,7 @@
 import SliderView from "./view";
 import SliderModel from "./model";
 
-const SliderController = function SliderController(elem) {
-    this.sliderView = new SliderView(elem);
-    this.sliderModel = new SliderModel();
-};
-SliderController.prototype.initialize = function initialize(settings: {
+interface sliderSettings {
     range: boolean,
     vertical: boolean,
     scale: boolean,
@@ -15,7 +11,14 @@ SliderController.prototype.initialize = function initialize(settings: {
     max: number,
     step: number,
     from: number,
-    to: number}) {
+    to: number,
+}
+
+const SliderController = function SliderController(elem: JQuery<HTMLElement>) {
+    this.sliderView = new SliderView(elem);
+    this.sliderModel = new SliderModel();
+};
+SliderController.prototype.initialize = function initialize(settings: sliderSettings) {
     this.sliderView.thumbsModule.onMoveThumb = this.onMoveThumb.bind(this);
     this.sliderView.onClickBg = this.onClickBg.bind(this);
 
@@ -75,7 +78,7 @@ SliderController.prototype.setInitialState = function setInitialState() {
 SliderController.prototype.setModelWidth = function setModelWidth() {
     this.sliderModel.offsetWidth = this.sliderView.getSliderWidth();
 };
-SliderController.prototype.reInitialize = function reInitialize(settings) {
+SliderController.prototype.reInitialize = function reInitialize(settings: sliderSettings) {
     this.sliderModel.setSettings(settings);
     this.setInitialState();
 };

@@ -1,4 +1,4 @@
-const Track = function Track($elem: Element) {
+const Track = function Track($elem: JQuery<HTMLElement>) {
     this.$elem = $elem;
 };
 Track.prototype.render = function render(bar: boolean) {

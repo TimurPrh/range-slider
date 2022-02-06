@@ -1,4 +1,4 @@
-const Border = function Border($elem: Element) {
+const Border = function Border($elem: JQuery<HTMLElement>) {
     this.$elem = $elem;
 };
 Border.prototype.render = function render(bar: boolean) {

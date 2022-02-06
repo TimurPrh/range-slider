@@ -1,4 +1,3 @@
-import $ from "jquery";
 import './slider-plugin/index';
 import Panel from './panel/panel';
 import './styles/style.scss';

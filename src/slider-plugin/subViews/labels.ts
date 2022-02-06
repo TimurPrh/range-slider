@@ -1,4 +1,4 @@
-const Labels = function Labels($elem: Element) {
+const Labels = function Labels($elem: JQuery<HTMLElement>) {
     this.$elem = $elem;
 };
 Labels.prototype.render = function render(isVertical: boolean) {

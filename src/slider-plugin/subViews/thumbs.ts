@@ -1,4 +1,4 @@
-const Thumbs = function Thumbs($elem: Element) {
+const Thumbs = function Thumbs($elem: JQuery<HTMLElement>) {
     this.$elem = $elem;
 
     this.onMoveThumb = null;

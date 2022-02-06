@@ -1,4 +1,4 @@
-const Inputs = function Inputs($elem: Element) {
+const Inputs = function Inputs($elem: JQuery<HTMLElement>) {
     this.$elem = $elem;
 };
 Inputs.prototype.render = function render(viewModel: {sliderMin: number, sliderMax: number, sliderStep: number}) {

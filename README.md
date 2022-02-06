@@ -1,6 +1,6 @@
 # Range Slider
 Четвертый этап - практическое задание MetaLamp.  
-Реализация плагина слайдера — специального контрола, который позволяет перетягиванием задавать какое-то числовое значение.
+Реализация jquery плагина слайдера — специального контрола, который позволяет перетягиванием задавать какое-то числовое значение.
 
 ## Основные команды
 `npm run dev` - сборка проекта в режиме development  
@@ -101,6 +101,8 @@ $sliderWrapper.on('moveThumbEvent', fromAndToValuesHandler.bind(this));
    $rangeSlider.slider('setToValue', 20)
    ```
    
+## Зависимости
+jQuery 2.2.4
 
 ## Диаграмма
 ![UML diagram](./src/assets/slider-uml.drawio.svg)

@@ -5,7 +5,7 @@ interface settings {
     oldStep: number,
 }
 
-const Scale = function Scale($elem: HTMLElement) {
+const Scale = function Scale($elem: JQuery<HTMLElement>) {
     this.$elem = $elem;
 };
 Scale.prototype.render = function render(scale: boolean, vertical: boolean, viewModel: settings, stepDegree: number, offsetWidth: number, offsetHeight: number) {
