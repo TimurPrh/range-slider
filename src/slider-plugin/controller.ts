@@ -140,17 +140,17 @@ SliderController.prototype.onMoveThumb = function onMoveThumb(event: { preventDe
     document.addEventListener('touchmove', onMouseMove);
     document.addEventListener('touchend', handleOnTouchEnd, { once: true });
 };
-SliderController.prototype.onClickBg = function onClickBg(event: { cancelable: any; preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; }; touches: { pageX: number; pageY: number; }[]; pageX: number; pageY: number; }) {
+SliderController.prototype.onClickBg = function onClickBg(event: { cancelable: boolean; preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; innerHTML: string; }; touches: { pageX: number; pageY: number; }[]; pageX: number; pageY: number; }) {
     if (event.cancelable) {
         event.preventDefault();
     }
 
-    const isClickableBackground = (e: { cancelable?: any; preventDefault?: () => void; target: any; touches?: { pageX: number; pageY: number; }[]; pageX?: number; pageY?: number; }) => {
-        const { classList, nodeName, parentNode } = e.target;
+    const isClickableBackground = () => {
+        const { classList, nodeName, parentNode } = event.target;
         return classList.contains('range-slider__range-bg') || classList.contains('range-slider__wrapper') || (nodeName === 'LI' && parentNode.classList.contains('range-slider__scale'));
     };
 
-    if (isClickableBackground(event)) {
+    if (isClickableBackground()) {
         let ox: number;
         let pageX: number;
         let pageY: number;
@@ -167,7 +167,13 @@ SliderController.prototype.onClickBg = function onClickBg(event: { cancelable: a
             ox = pageX - this.sliderView.$slider.offset().left;
         }
         const i = this.sliderModel.calculateIndex(ox);
-        this.sliderModel.calculateMove(ox, i);
+        if (event.target.nodeName === 'LI') {
+            this.sliderModel.currentValue[i] = event.target.innerHTML;
+            this.sliderModel.setInitialOutput();
+        } else {
+            this.sliderModel.calculateMove(ox, i);
+        }
+
         this.sliderView.moveAt(this.sliderModel.outputOx, i);
     }
 };

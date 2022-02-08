@@ -335,6 +335,7 @@ describe('Controller: onClickBg', () => {
                         },
                     },
                 },
+                innerHTML: '50',
             },
             pageY: 100,
             pageX: 150,
@@ -342,13 +343,14 @@ describe('Controller: onClickBg', () => {
         };
         controller.sliderModel.isVertical = false;
         Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
+        Object.defineProperty(controller.sliderModel, 'currentValue', { value: ['', 30] });
         const mockSliderCoords = jest.fn(() => ({
             left: 20,
             top: 30,
         }));
         Object.defineProperty(controller.sliderView, '$slider', { value: { offset: mockSliderCoords } });
         jest.spyOn(event, 'preventDefault');
-        controller.sliderModel.calculateIndex = jest.fn((ox) => 123);
+        controller.sliderModel.calculateIndex = jest.fn((ox) => 1);
 
         controller.onClickBg(event);
 
@@ -357,19 +359,17 @@ describe('Controller: onClickBg', () => {
         // mock model
         const mockModelInstance = SliderModel.mock.instances[0];
         const mockModelCalculateIndex = mockModelInstance.calculateIndex;
-        const mockModelCalculateMove = mockModelInstance.calculateMove;
+        const mockModelSetInitialOutput = mockModelInstance.setInitialOutput;
 
         expect(mockModelCalculateIndex.mock.calls[0][0]).toEqual(130);
-        expect(mockModelCalculateMove.mock.calls[0][0]).toEqual(130);
-        expect(mockModelCalculateMove.mock.calls[0][1]).toEqual(123);
         expect(mockModelCalculateIndex).toHaveBeenCalledTimes(1);
-        expect(mockModelCalculateMove).toHaveBeenCalledTimes(1);
+        expect(mockModelSetInitialOutput).toHaveBeenCalledTimes(1);
 
         // mock view
         const mockViewInstance = SliderView.mock.instances[0];
         const mockViewMoveAt = mockViewInstance.moveAt;
         expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
-        expect(mockViewMoveAt.mock.calls[0][1]).toEqual(123);
+        expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(1);
     });
     test('should not set value on slider, because classList does not contains', () => {
