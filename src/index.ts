@@ -10,7 +10,7 @@ const panelWrappers = document.querySelectorAll('.js-main__panel');
 
 const sliderSettings = [
     {
-        range: true, vertical: false, scale: true, tip: true, bar: false, min: 0, max: 100, step: 10, from: 20, to: 40,
+        range: true, vertical: false, scale: true, tip: true, bar: true, min: 0, max: 100, step: 10, from: 20, to: 40,
     },
     {
         range: true, vertical: false, scale: true, tip: true, bar: true, min: -1, max: 1, step: 0.1, from: -0.5, to: 0.5,

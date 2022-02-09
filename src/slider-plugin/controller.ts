@@ -147,7 +147,7 @@ SliderController.prototype.onClickBg = function onClickBg(event: { cancelable: b
 
     const isClickableBackground = () => {
         const { classList, nodeName, parentNode } = event.target;
-        return classList.contains('range-slider__range-bg') || classList.contains('range-slider__wrapper') || (nodeName === 'LI' && parentNode.classList.contains('range-slider__scale'));
+        return classList.contains('range-slider__range-bg') || classList.contains('range-slider__border') || classList.contains('range-slider__wrapper') || (nodeName === 'LI' && parentNode.classList.contains('range-slider__scale'));
     };
 
     if (isClickableBackground()) {
