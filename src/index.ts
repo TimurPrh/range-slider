@@ -19,7 +19,7 @@ const sliderSettings = [
         range: false, vertical: true, scale: true, tip: true, bar: true, min: 0, max: 1000, step: 10, from: 200, to: 400,
     },
     {
-        range: true, vertical: false, scale: true, tip: true, bar: true, min: 1000, max: 15000, step: 100, from: 2000, to: 4000,
+        range: true, vertical: false, scale: true, tip: true, bar: true, min: 1000, max: 16000, step: 100, from: 2000, to: 4000,
     },
 ];
 

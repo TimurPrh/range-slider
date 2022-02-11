@@ -92,6 +92,78 @@ describe('Controller: initialize', () => {
         expect(mockViewMoveAt.mock.calls[1][1]).toEqual(0);
         expect(mockViewMoveAt).toHaveBeenCalledTimes(2);
     });
+    test('should initialize slider with old width === 0', () => {
+        Object.defineProperty(controller.sliderView, 'thumbsModule', { value: { onMoveThumb: null } });
+        controller.sliderModel.offsetWidth = 0;
+        controller.sliderView.getSliderWidth = jest.fn(() => 200);
+        Object.defineProperty(controller.sliderView, '$rangeSlider', { value: { resize: jest.fn((callback) => callback()) } });
+
+        Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
+        Object.defineProperty(controller.sliderModel, 'isRange', { value: false });
+        Object.defineProperty(controller.sliderModel, 'isVertical', { value: false });
+
+        controller.initialize();
+
+        expect(SliderView).toHaveBeenCalledTimes(1);
+        expect(SliderModel).toHaveBeenCalledTimes(1);
+
+        expect(controller.sliderModel.offsetWidth).toEqual(200);
+
+        // mock model
+        const mockModelInstance = SliderModel.mock.instances[0];
+        const mockModelSetInitialSettings = mockModelInstance.setInitialSettings;
+        const mockModelInitView = mockModelInstance.initView;
+        const mockModelSetInitialOutput = mockModelInstance.setInitialOutput;
+
+        expect(mockModelSetInitialSettings.mock.calls[0][0]).toEqual(undefined);
+        expect(mockModelSetInitialSettings).toHaveBeenCalledTimes(1);
+        expect(mockModelInitView).toHaveBeenCalledTimes(1);
+        expect(mockModelSetInitialOutput).toHaveBeenCalledTimes(2);
+
+        // mock view
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
+        expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
+        expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
+        expect(mockViewMoveAt).toHaveBeenCalledTimes(2);
+    });
+    test('should initialize slider with options isVertical and isRange - true and old width === 0', () => {
+        Object.defineProperty(controller.sliderView, 'thumbsModule', { value: { onMoveThumb: null } });
+        controller.sliderModel.offsetWidth = 0;
+        controller.sliderView.getSliderWidth = jest.fn(() => 200);
+        Object.defineProperty(controller.sliderView, '$rangeSlider', { value: { resize: jest.fn((callback) => callback()) } });
+
+        Object.defineProperty(controller.sliderModel, 'outputOx', { value: 'test Ox' });
+        Object.defineProperty(controller.sliderModel, 'isRange', { value: true });
+        Object.defineProperty(controller.sliderModel, 'isVertical', { value: true });
+
+        controller.initialize();
+
+        expect(SliderView).toHaveBeenCalledTimes(1);
+        expect(SliderModel).toHaveBeenCalledTimes(1);
+
+        expect(controller.sliderModel.offsetWidth).toEqual(200);
+
+        // mock model
+        const mockModelInstance = SliderModel.mock.instances[0];
+        const mockModelSetInitialSettings = mockModelInstance.setInitialSettings;
+        const mockModelInitView = mockModelInstance.initView;
+        const mockModelSetInitialOutput = mockModelInstance.setInitialOutput;
+
+        expect(mockModelSetInitialSettings.mock.calls[0][0]).toEqual(undefined);
+        expect(mockModelSetInitialSettings).toHaveBeenCalledTimes(1);
+        expect(mockModelInitView).toHaveBeenCalledTimes(1);
+        expect(mockModelSetInitialOutput).toHaveBeenCalledTimes(2);
+
+        // mock view
+        const mockViewInstance = SliderView.mock.instances[0];
+        const mockViewMoveAt = mockViewInstance.moveAt;
+        expect(mockViewMoveAt.mock.calls[0][0]).toEqual('test Ox');
+        expect(mockViewMoveAt.mock.calls[0][1]).toEqual(1);
+        expect(mockViewMoveAt.mock.calls[1][0]).toEqual('test Ox');
+        expect(mockViewMoveAt.mock.calls[1][1]).toEqual(0);
+        expect(mockViewMoveAt).toHaveBeenCalledTimes(4);
+    });
 });
 
 describe('Controller: reInitialize', () => {

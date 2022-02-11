@@ -71,12 +71,19 @@ SliderController.prototype.setInitialState = function setInitialState() {
         this.sliderView.moveAt(this.sliderModel.outputOx, 0);
     }
 
-    this.sliderView.$rangeSlider.resize(() => {
-        this.setModelWidth();
-    });
+    new ResizeObserver(() => this.setModelWidth()).observe(this.sliderView.$rangeSlider[0]);
 };
 SliderController.prototype.setModelWidth = function setModelWidth() {
+    this.sliderModel.offsetWidthOld = this.sliderModel.offsetWidth;
     this.sliderModel.offsetWidth = this.sliderView.getSliderWidth();
+    if (this.sliderModel.offsetWidthOld === 0 && this.sliderModel.offsetWidth !== 0) {
+        this.sliderModel.setInitialOutput();
+
+        this.sliderView.moveAt(this.sliderModel.outputOx, 1);
+        if (this.sliderModel.isRange) {
+            this.sliderView.moveAt(this.sliderModel.outputOx, 0);
+        }
+    }
 };
 SliderController.prototype.reInitialize = function reInitialize(settings: sliderSettings) {
     this.sliderModel.setSettings(settings);
