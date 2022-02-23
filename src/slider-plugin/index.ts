@@ -1,4 +1,4 @@
-import SliderController from './controller';
+import SliderController from './controller/controller';
 
 import './style.scss';
 

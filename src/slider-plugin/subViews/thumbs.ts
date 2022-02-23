@@ -20,8 +20,10 @@ Thumbs.prototype.render = function render(isRange: boolean) {
 
     if (isRange) {
         this.$thumbs.each((i: number, thumb) => {
-            thumb.addEventListener("mousedown", this.onMoveThumb);
-            thumb.addEventListener('touchstart', this.onMoveThumb);
+            // thumb.addEventListener("mousedown", this.onMoveThumb);
+            // thumb.addEventListener('touchstart', this.onMoveThumb);
+            this.$thumbs.eq(i).on('mousedown', this.onMoveThumb);
+            this.$thumbs.eq(i).on('touchstart', this.onMoveThumb);
         });
     } else {
         this.$thumbs.eq(1).on('mousedown', this.onMoveThumb);

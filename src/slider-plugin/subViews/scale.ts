@@ -15,53 +15,59 @@ Scale.prototype.render = function render(scale: boolean, vertical: boolean, view
         this.offsetWidth = offsetWidth;
         this.offsetHeight = offsetHeight;
         if (vertical) {
-            const scaleElement = document.createElement('ul');
-            scaleElement.classList.add('range-slider__scale', 'range-slider__scale_vertical');
-            let stepCount = Math.floor((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep) + 1;
-            if (stepCount > 200) {
-                stepCount = 200;
-            }
-            this.stepCount = stepCount;
-            this.stepWidth = offsetHeight / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
-            let stepValue = this.roundValue(viewModel.sliderMin + viewModel.sliderStep * (stepCount - 1));
-            for (let i = 0; i < stepCount; i++) {
-                scaleElement.innerHTML += `<li>${stepValue}</li>`;
-                stepValue = this.roundValue(stepValue - viewModel.sliderStep);
-            }
-            scaleElement.style.gridTemplateRows = `repeat(${stepCount}, ${(this.stepWidth * 100) / offsetHeight}%)`;
-            const scaleMarginTop = ((offsetHeight / (stepCount - 1) - this.stepWidth) * (stepCount - 1));
-            scaleElement.style.marginTop = `${(scaleMarginTop * 100) / offsetHeight}%`;
-            this.$elem.parent().css('display', 'flex');
-            this.$elem.parent().prepend(scaleElement);
-
-            this.scaleElement = scaleElement;
-
-            this.checkCapacity('clientHeight', viewModel);
+            this.renderVerticalScale(viewModel, offsetHeight);
         } else {
-            const scaleElement = document.createElement('ul');
-            scaleElement.classList.add('range-slider__scale');
-            let stepCount = Math.floor((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep) + 1;
-            if (stepCount > 200) {
-                stepCount = 200;
-            }
-            this.stepCount = stepCount;
-            this.stepWidth = offsetWidth / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
-            let stepValue = viewModel.sliderMin;
-            for (let i = 0; i < stepCount; i++) {
-                scaleElement.innerHTML += `<li>${stepValue}</li>`;
-                stepValue = this.roundValue(stepValue + viewModel.sliderStep);
-            }
-            scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${(this.stepWidth * 100) / offsetWidth}%)`;
-            const scaleMarginRight = ((offsetWidth / (stepCount - 1) - this.stepWidth) * (stepCount - 1));
-            scaleElement.style.marginRight = `${(scaleMarginRight * 100) / offsetWidth}%`;
-            this.$elem.parent().css('display', 'block');
-            this.$elem.parent().append(scaleElement);
-
-            this.scaleElement = scaleElement;
-
-            this.checkCapacity('clientWidth', viewModel);
+            this.renderHorizontalScale(viewModel, offsetWidth);
         }
     }
+};
+Scale.prototype.renderVerticalScale = function renderVerticalScale(viewModel: settings, offsetHeight: number) {
+    const scaleElement = document.createElement('ul');
+    scaleElement.classList.add('range-slider__scale', 'range-slider__scale_vertical');
+    let stepCount = Math.floor((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep) + 1;
+    if (stepCount > 200) {
+        stepCount = 200;
+    }
+    this.stepCount = stepCount;
+    this.stepWidth = offsetHeight / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
+    let stepValue = this.roundValue(viewModel.sliderMin + viewModel.sliderStep * (stepCount - 1));
+    for (let i = 0; i < stepCount; i++) {
+        scaleElement.innerHTML += `<li>${stepValue}</li>`;
+        stepValue = this.roundValue(stepValue - viewModel.sliderStep);
+    }
+    scaleElement.style.gridTemplateRows = `repeat(${stepCount}, ${(this.stepWidth * 100) / offsetHeight}%)`;
+    const scaleMarginTop = ((offsetHeight / (stepCount - 1) - this.stepWidth) * (stepCount - 1));
+    scaleElement.style.marginTop = `${(scaleMarginTop * 100) / offsetHeight}%`;
+    this.$elem.parent().css('display', 'flex');
+    this.$elem.parent().prepend(scaleElement);
+
+    this.scaleElement = scaleElement;
+
+    this.checkCapacity('clientHeight', viewModel);
+};
+Scale.prototype.renderHorizontalScale = function renderHorizontalScale(viewModel: settings, offsetWidth: number) {
+    const scaleElement = document.createElement('ul');
+    scaleElement.classList.add('range-slider__scale');
+    let stepCount = Math.floor((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep) + 1;
+    if (stepCount > 200) {
+        stepCount = 200;
+    }
+    this.stepCount = stepCount;
+    this.stepWidth = offsetWidth / ((viewModel.sliderMax - viewModel.sliderMin) / viewModel.sliderStep);
+    let stepValue = viewModel.sliderMin;
+    for (let i = 0; i < stepCount; i++) {
+        scaleElement.innerHTML += `<li>${stepValue}</li>`;
+        stepValue = this.roundValue(stepValue + viewModel.sliderStep);
+    }
+    scaleElement.style.gridTemplateColumns = `repeat(${stepCount}, ${(this.stepWidth * 100) / offsetWidth}%)`;
+    const scaleMarginRight = ((offsetWidth / (stepCount - 1) - this.stepWidth) * (stepCount - 1));
+    scaleElement.style.marginRight = `${(scaleMarginRight * 100) / offsetWidth}%`;
+    this.$elem.parent().css('display', 'block');
+    this.$elem.parent().append(scaleElement);
+
+    this.scaleElement = scaleElement;
+
+    this.checkCapacity('clientWidth', viewModel);
 };
 Scale.prototype.checkCapacity = function checkCapacity(dim: string, viewModel: settings) {
     const {
