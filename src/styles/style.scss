@@ -1,28 +1,28 @@
 * {
-    box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
-    font-style: normal;
-    font-weight: normal;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: normal;
 }
 
 .main {
-    padding: 20px 50px;
-    &__wrapper {
-        display: grid;
-        grid-template-columns: auto auto;
+  padding: 20px 50px;
+  &__wrapper {
+    display: grid;
+    grid-template-columns: auto auto;
+  }
+  &__slider {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 380px;
+    height: 250px;
+  }
+  &__panel {
+    margin-top: 20px;
+  }
+  hr {
+    &:last-child {
+      display: none;
     }
-    &__slider {
-        margin-top: 20px;
-        margin-bottom: 20px;
-        width: 380px;
-        height: 250px;
-    }
-    &__panel {
-        margin-top: 20px;
-    }
-    hr {
-        &:last-child {
-            display: none;
-        }
-    }
+  }
 }

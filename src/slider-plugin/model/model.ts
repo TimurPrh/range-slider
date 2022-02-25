@@ -15,9 +15,7 @@ const SliderModel = function SliderModel() {
     this.minThumbOffset = 0;
     this.currentValue = [];
     this.sliderRange = [];
-};
-SliderModel.prototype.setInitialSettings = function setInitialSettings(settings: sliderSettings) {
-    let defaults = {
+    this.defaults = {
         range: true,
         vertical: true,
         scale: true,
@@ -29,8 +27,9 @@ SliderModel.prototype.setInitialSettings = function setInitialSettings(settings:
         from: 0,
         to: 100,
     };
-    defaults = { ...defaults, ...settings };
-    const step: number = defaults.step || 1; // Исключаем нулевой шаг
+};
+SliderModel.prototype.setInitialSettings = function setInitialSettings(settings: sliderSettings) {
+    const defaults = this.validateSettings({ ...this.defaults, ...settings });
     this.isRange = defaults.range;
     this.isVertical = defaults.vertical;
     this.viewScale = defaults.scale;
@@ -38,7 +37,7 @@ SliderModel.prototype.setInitialSettings = function setInitialSettings(settings:
     this.viewBar = defaults.bar;
     this.initialMin = defaults.min;
     this.initialMax = defaults.max;
-    this.initialStep = step;
+    this.initialStep = defaults.step;
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
 
@@ -59,9 +58,7 @@ SliderModel.prototype.setSettings = function setSettings(settings: sliderSetting
         from: this.currentValue[0],
         to: this.currentValue[1],
     };
-    defaults = { ...defaults, ...settings };
-
-    const step: number = defaults.step || 1; // Исключаем нулевой шаг
+    defaults = this.validateSettings({ ...defaults, ...settings });
 
     this.isRange = defaults.range;
     this.isVertical = defaults.vertical;
@@ -70,7 +67,7 @@ SliderModel.prototype.setSettings = function setSettings(settings: sliderSetting
     this.viewBar = defaults.bar;
     this.initialMin = defaults.min;
     this.initialMax = defaults.max;
-    this.initialStep = step;
+    this.initialStep = defaults.step;
     [this.oldFrom, this.oldTo] = this.currentValue;
     this.currentValue[0] = defaults.from;
     this.currentValue[1] = defaults.to;
@@ -140,6 +137,16 @@ SliderModel.prototype.setInitialOutput = function setInitialOutput() {
     }
 
     this.initialMax = tempMax;
+};
+SliderModel.prototype.validateSettings = function validateSettings(settings: sliderSettings) {
+    const validSettings = settings;
+    if (validSettings.step <= 0 || validSettings.max <= validSettings.min) {
+        validSettings.min = this.defaults.min;
+        validSettings.max = this.defaults.max;
+        validSettings.step = this.defaults.step;
+    }
+
+    return validSettings;
 };
 SliderModel.prototype.calculateSignificantDegree = function calculateSignificantDegree(val1: number) {
     const val: number = Math.abs(val1);
