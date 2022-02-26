@@ -27,6 +27,7 @@ const SliderModel = function SliderModel() {
         from: 0,
         to: 100,
     };
+    this.validateError = false;
 };
 SliderModel.prototype.setInitialSettings = function setInitialSettings(settings: sliderSettings) {
     const defaults = this.validateSettings({ ...this.defaults, ...settings });
@@ -140,7 +141,12 @@ SliderModel.prototype.setInitialOutput = function setInitialOutput() {
 };
 SliderModel.prototype.validateSettings = function validateSettings(settings: sliderSettings) {
     const validSettings = settings;
-    if (validSettings.step <= 0 || validSettings.max <= validSettings.min) {
+    this.isValidSettings = (s: sliderSettings) => (s.step <= 0 || s.max <= s.min || (s.max - s.min) < s.step);
+
+    if (this.isValidSettings(settings)) {
+        console.error(`Validate slider settings error. Attempt to set min - ${settings.min}, max - ${settings.max}, step - ${settings.step}`);
+        this.validateError = true;
+
         validSettings.min = this.defaults.min;
         validSettings.max = this.defaults.max;
         validSettings.step = this.defaults.step;

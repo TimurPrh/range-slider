@@ -37,6 +37,11 @@ panelWrappers.forEach((panelWrapper, i) => {
     }
     $rangeSliderWrappers.eq(i).on('moveThumbEvent', fromAndToValuesHandler.bind(this));
 
+    function validateSettingsErrorHandler(e: CustomEvent, { defaults }) {
+        panels[i].initialize(defaults);
+    }
+    $rangeSliderWrappers.eq(i).on('validateSliderSettingsError', validateSettingsErrorHandler.bind(this));
+
     function configurationHandler(e: CustomEvent) {
         const obj = {};
         obj[e.detail.key] = e.detail.value;

@@ -130,7 +130,7 @@ SliderView.prototype.moveAt = function moveAt(obj: { thumbs: [{ ox: number, valu
     this.trackModule.change(trackOx.begin, trackOx.end, this.isVertical);
     let inputVal: number;
     if (this.isRange || id === 1) {
-        inputVal = this.inputsModule.change(thumbValue, id);
+        inputVal = parseFloat(this.inputsModule.change(thumbValue, id));
         const labelsOffsetLeft = Math.max(this.trackModule.$track.width() / 2, this.thumbsModule.$thumbs.eq(1).width() / 2);
         this.labelsModule.change(id, thumbOx, labelsOffsetLeft, inputVal, this.isVertical, this.tip);
         this.thumbsModule.change(id, thumbOx, this.isVertical);
@@ -145,8 +145,8 @@ SliderView.prototype.getSliderWidth = function getSliderWidth() {
     return this.$slider.width();
 };
 SliderView.prototype.calculateMove = function calculateMove(pos: number, id: number) {
-    const maxSteps = Math.floor((this.sliderProps[1].sliderMax - this.sliderProps[0].sliderMin) / this.sliderProps[1].sliderStep);
-    const viewStep = ((this.offsetWidth) * this.sliderProps[id].sliderStep) / (this.sliderProps[1].sliderMax - this.sliderProps[0].sliderMin);
+    const maxSteps = Math.floor((this.initialMax - this.initialMin) / this.initialStep);
+    const viewStep = ((this.offsetWidth) * this.initialStep) / (this.initialMax - this.initialMin);
     let ox: number;
 
     if (this.isVertical) {
@@ -340,7 +340,7 @@ SliderView.prototype.onClickBg = function onClickBg(event: { cancelable: boolean
         }
         const id = this.calculateIndex(ox);
         if (event.target.nodeName === 'LI') {
-            const inputVal = event.target.innerHTML;
+            const inputVal = +event.target.innerHTML;
             this.$elem.trigger('moveThumbEvent', { inputVal, id });
             this.$elem.trigger('needViewUpdateEvent', { id });
         } else {

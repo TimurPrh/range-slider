@@ -47,8 +47,8 @@ SliderController.prototype.getSettings = function getSettings() {
         min: this.sliderModel.initialMin,
         max: this.sliderModel.initialMax,
         step: this.sliderModel.initialStep,
-        from: this.sliderView.inputsModule.$inputs[0].value,
-        to: this.sliderView.inputsModule.$inputs[1].value,
+        from: parseFloat(this.sliderView.inputsModule.$inputs[0].value),
+        to: parseFloat(this.sliderView.inputsModule.$inputs[1].value),
     };
 };
 SliderController.prototype.initView = function initView(props:{
@@ -84,6 +84,10 @@ SliderController.prototype.setInitialState = function setInitialState() {
 };
 SliderController.prototype.reInitialize = function reInitialize(settings: sliderSettings) {
     this.sliderModel.setSettings(settings);
+    if (this.sliderModel.validateError) {
+        this.sliderView.$elem.trigger('validateSliderSettingsError', { defaults: this.getSettings() });
+        this.sliderModel.validateError = false;
+    }
     this.setInitialState();
 };
 SliderController.prototype.setToValue = function setToValue(val: number) {
