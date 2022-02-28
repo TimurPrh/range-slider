@@ -9,7 +9,7 @@
     "watch": "cross-env NODE_ENV=development webpack --mode development --watch",
     "start": "cross-env NODE_ENV=development webpack serve --mode development --open",
     "test": "jest",
-    "lint": "eslint src/**/*.js"
+    "lint": "eslint src/**/*.js src/**/*.ts --fix"
   },
   "browserList": ">0.25%, not dead",
   "author": "",

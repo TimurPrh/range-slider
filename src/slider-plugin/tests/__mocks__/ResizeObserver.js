@@ -1,13 +1,13 @@
 class ResizeObserver {
-    observe() {
-        // do nothing
-        this.bar = "Hello World";
-    }
+  observe() {
+    // do nothing
+    this.bar = "Hello World";
+  }
 
-    unobserve() {
-        // do nothing
-        this.bar = "Hello World";
-    }
+  unobserve() {
+    // do nothing
+    this.bar = "Hello World";
+  }
 }
 
 window.ResizeObserver = ResizeObserver;
