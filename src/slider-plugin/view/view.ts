@@ -97,11 +97,9 @@ SliderView.prototype.setWidth = function setWidth(currentValue: number[]) {
   this.offsetWidthOld = this.offsetWidth;
   this.offsetWidth = this.getSliderWidth();
   if (this.offsetWidthOld === 0 && this.offsetWidth !== 0) {
-    this.setOutputOx(currentValue);
-
-    this.moveAt(this.outputOx, 1);
+    this.setOutputOx(currentValue, 1);
     if (this.isRange) {
-      this.moveAt(this.outputOx, 0);
+      this.setOutputOx(currentValue, 0);
     }
   }
 };
@@ -265,8 +263,10 @@ SliderView.prototype.calculateTrack = function calculateTrack() {
     };
   }
 };
-SliderView.prototype.onMoveThumb = function onMoveThumb(event: { preventDefault: () => void; }) {
-  event.preventDefault();
+SliderView.prototype.onMoveThumb = function onMoveThumb(event: { cancelable?: any; preventDefault: any; target?: any; pageY?: any; pageX?: any; touches?: any; }) {
+  if (event.cancelable) {
+    event.preventDefault();
+  }
 
   const moveForListener = (e: { preventDefault?: () => void; target?: any; pageY?: any; pageX?: any; touches?: any; }) => {
     if (e.target.classList.contains('range-slider__thumb')) {
@@ -311,7 +311,7 @@ SliderView.prototype.onMoveThumb = function onMoveThumb(event: { preventDefault:
   document.addEventListener('touchmove', onMouseMove);
   document.addEventListener('touchend', handleOnTouchEnd, { once: true });
 };
-SliderView.prototype.onClickBg = function onClickBg(event: { cancelable: boolean; preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; innerHTML: string; }; touches: { pageX: number; pageY: number; }[]; pageX: number; pageY: number; }) {
+SliderView.prototype.onClickBg = function onClickBg(event: { cancelable: boolean; preventDefault: () => void; target: { classList: any; nodeName: any; parentNode: any; innerHTML: string; }; originalEvent: {touches: { pageX: number; pageY: number; }}; pageX: number; pageY: number; }) {
   if (event.cancelable) {
     event.preventDefault();
   }
@@ -325,9 +325,9 @@ SliderView.prototype.onClickBg = function onClickBg(event: { cancelable: boolean
     let ox: number;
     let pageX: number;
     let pageY: number;
-    if (event.touches) {
-      pageX = event.touches[0].pageX;
-      pageY = event.touches[0].pageY;
+    if (event.originalEvent.touches) {
+      pageX = event.originalEvent.touches[0].pageX;
+      pageY = event.originalEvent.touches[0].pageY;
     } else {
       pageX = event.pageX;
       pageY = event.pageY;

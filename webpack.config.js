@@ -157,6 +157,6 @@ module.exports = {
     ],
   },
   externals: {
-    jquery: 'jQuery',
+    jquery: isProd ? 'jquery' : 'jQuery',
   },
 };
